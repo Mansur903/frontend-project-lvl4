@@ -5,7 +5,7 @@ import {
 import { object, string } from 'yup';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import useAuth from './hooks/index.jsx';
+// Хуки находятся в react-redux
 
 const userSchema = object({
   username: string().min(3, 'Должно быть 3 или более символов').required('Это обязательное поле'),
@@ -14,7 +14,6 @@ const userSchema = object({
 
 const loginForm = () => {
   const history = useHistory();
-  const { logIn } = useAuth();
   const goHome = () => {
     history.push('/');
   };
@@ -31,16 +30,13 @@ const loginForm = () => {
         onSubmit={(values) => {
           axios.post('/api/v1/login', values)
             .then((response) => {
-              console.log(response);
               localStorage.token = response.data.token;
               goHome();
-              logIn();
             })
             .catch((error) => {
               document.querySelector('.error-field').style.display = 'block';
               console.log(error);
             });
-          console.log(values);
         }}
       >
         {({ errors, touched }) => (

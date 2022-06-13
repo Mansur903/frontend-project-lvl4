@@ -5,7 +5,7 @@ import {
   Route,
   Link,
 } from 'react-router-dom';
-
+import { io } from 'socket.io-client';
 import Login from './login.page.jsx';
 import Home from './home.page.jsx';
 import AuthContext from './contexts/index.jsx';
@@ -17,17 +17,21 @@ function AuthProvider({ children }) {
     localStorage.removeItem('token');
     setLoggedIn(false);
   };
-
-  console.log('loggedIn :', loggedIn);
+  // console.log('loggedIn :', loggedIn);
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <AuthContext.Provider value={{ loggedIn, logIn, logOut }}>
+    <AuthContext.Provider value={{
+      loggedIn, logIn, logOut,
+    }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
 function App() {
+  const socket = io().connect();
+  console.log('app started');
   return (
     <AuthProvider>
       <Router>
@@ -49,7 +53,7 @@ function App() {
             </Route>
 
             <Route path="/">
-              <Home />
+              <Home socket={socket} />
             </Route>
           </Switch>
         </div>
