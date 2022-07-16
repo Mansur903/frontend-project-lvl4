@@ -1,8 +1,25 @@
 @import '~bootstrap/scss/bootstrap';
 
+/* .form-control {
+  padding-bottom: 0.625rem !important;
+  padding-top: 1.625rem !important;
+} */
+
 .error-field {
-  display: none;
   color: red;
+}
+
+.no-error-field {
+  display: none;
+}
+
+/* .error-field {
+  display: block;
+  color: red;
+}
+
+.no-error-field {
+  display: none;
 }
 
 .chat-box {
@@ -18,6 +35,18 @@
   border-right: 1px solid black;
 }
 
+.channels__header {
+  display: flex;
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.add_channel {
+  height: 30px;
+  margin: 5px;
+}
+
 .chat {
   width: 70%;
   height: 100%;
@@ -26,9 +55,13 @@
   justify-content: space-between;
 }
 
+.chat__form {
+  display: flex;
+}
+
 .title {
   padding: 10px;
-  border-bottom: 1px solid black;
+  margin: 0;
 }
 
 .channels__list {
@@ -66,4 +99,5 @@
 
 .chat__message:last-child {
   padding: 0px 0px 7px 7px;
-}
+} */
+

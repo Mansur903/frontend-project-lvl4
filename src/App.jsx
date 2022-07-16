@@ -5,7 +5,12 @@ import {
   Route,
   Link,
 } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
+import {
+  initChannels, initMessages, chooseChannel, newMessage, openModal,
+  newChannel,
+} from './slices/chatSlice.js';
 import Login from './login.page.jsx';
 import Home from './home.page.jsx';
 import AuthContext from './contexts/index.jsx';
@@ -17,7 +22,6 @@ function AuthProvider({ children }) {
     localStorage.removeItem('token');
     setLoggedIn(false);
   };
-  // console.log('loggedIn :', loggedIn);
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
     <AuthContext.Provider value={{
@@ -30,13 +34,16 @@ function AuthProvider({ children }) {
 }
 
 function App() {
+  const dispatch = useDispatch();
+
+  const chatState = useSelector((state) => state.chat);
   const socket = io().connect();
+
   console.log('app started');
   return (
     <AuthProvider>
       <Router>
-        <div>
-          <nav>
+        {/*           <nav>
             <ul>
               <li>
                 <Link to="/">Home</Link>
@@ -45,18 +52,17 @@ function App() {
                 <Link to="/login">Login</Link>
               </li>
             </ul>
-          </nav>
+          </nav> */}
 
-          <Switch>
-            <Route path="/login">
-              <Login />
-            </Route>
+        <Switch>
+          <Route path="/login">
+            <Login />
+          </Route>
 
-            <Route path="/">
-              <Home socket={socket} />
-            </Route>
-          </Switch>
-        </div>
+          <Route path="/">
+            <Home socket={socket} />
+          </Route>
+        </Switch>
       </Router>
     </AuthProvider>
   );
