@@ -6,10 +6,14 @@ import { object, string } from 'yup';
 import axios from 'axios';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+  Button,
+} from 'react-bootstrap';
 
 import { useHistory } from 'react-router-dom';
-import { authSuccess, authError } from './slices/chatSlice';
-import MyImage from '../images/hexlet-image.jpg';
+import { authSuccess, authError, setAuthNull } from '../slices/chatSlice.js';
+import LoginImage from '../../images/hexlet-image.jpg';
+import useAuth from '../hooks/index.jsx';
 // Хуки находятся в react-redux
 
 const userSchema = object({
@@ -17,18 +21,25 @@ const userSchema = object({
   password: string().min(4, 'Должно быть 4 или более символов').required('Это обязательное поле'),
 });
 
-const loginForm = () => {
+function LoginForm() {
+  const { logOut } = useAuth();
   const history = useHistory();
   const dispatch = useDispatch();
   const chatState = useSelector((state) => state.chat);
-  console.log('chatState :', chatState);
+
   const goHome = () => {
     history.push('/');
   };
 
+  const handleLogOut = () => {
+    logOut();
+    dispatch(authError());
+    setAuthNull();
+  };
+
   const errorField = cn({
     'error-field': !chatState.authorized,
-    'no-error-field': chatState.authorized,
+    'no-error-field': chatState.authorized === null,
   });
 
   return (
@@ -36,7 +47,7 @@ const loginForm = () => {
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
           <a className="navbar-brand" href="/">My Chat</a>
-          <button type="button" className="btn btn-primary">Выйти</button>
+          {chatState.authorized ? <button type="button" onClick={handleLogOut} className="btn btn-primary">Выйти</button> : null}
         </div>
       </nav>
       <div className="container-fluid h-100">
@@ -45,7 +56,7 @@ const loginForm = () => {
             <div className="card shadow-sm">
               <div className="card-body row p-5">
                 <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                  <img src={MyImage} alt="Войти" className="rounded-circle" />
+                  <img src={LoginImage} alt="Войти" className="rounded-circle" />
                 </div>
                 <Formik
                   initialValues={{
@@ -79,11 +90,17 @@ const loginForm = () => {
                         <label htmlFor="password">Пароль</label>
                         {errors.password && touched.password ? (<div className="error-field">{errors.password}</div>) : null}
                       </div>
-                      <button className="w-100 mb-3 btn btn-outline-primary" type="submit">Войти</button>
+                      <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit">Войти</Button>
                       <div className={errorField}>Неправильно введён логин или пароль</div>
                     </Form>
                   )}
                 </Formik>
+              </div>
+              <div className="card-footer p-4">
+                <div className="text-center">
+                  <span>Нет аккаунта? </span>
+                  <a href="/signup">Регистрация</a>
+                </div>
               </div>
             </div>
           </div>
@@ -91,12 +108,12 @@ const loginForm = () => {
       </div>
     </div>
   );
-};
+}
 
 function LoginPage() {
   return (
     <>
-      {loginForm()}
+      {LoginForm()}
     </>
   );
 }

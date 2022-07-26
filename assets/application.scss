@@ -1,10 +1,5 @@
 @import '~bootstrap/scss/bootstrap';
 
-/* .form-control {
-  padding-bottom: 0.625rem !important;
-  padding-top: 1.625rem !important;
-} */
-
 .error-field {
   color: red;
 }
@@ -13,91 +8,5 @@
   display: none;
 }
 
-/* .error-field {
-  display: block;
-  color: red;
-}
 
-.no-error-field {
-  display: none;
-}
-
-.chat-box {
-  width: 80%;
-  height: 500px;
-  border: 1px solid black;
-  display: flex;
-}
-
-.channels {
-  width: 30%;
-  height: 100%;
-  border-right: 1px solid black;
-}
-
-.channels__header {
-  display: flex;
-  border-bottom: 1px solid black;
-  margin-bottom: 10px;
-  justify-content: space-between;
-}
-
-.add_channel {
-  height: 30px;
-  margin: 5px;
-}
-
-.chat {
-  width: 70%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.chat__form {
-  display: flex;
-}
-
-.title {
-  padding: 10px;
-  margin: 0;
-}
-
-.channels__list {
-  list-style: none;  
-  padding-left: 10px;
-}
-
-.channels__item {
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-.input {
-  width: 90.8%;
-}
-
-.active {
-  border: 1px solid green;
-}
-
-.chat__field {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  overflow: auto;
-}
-
-.chat__message {
-  padding: 0px 0px 0px 7px;
-}
-
-.chat__message:last-child {
-  padding: 0px 0px 7px 7px;
-} */
 

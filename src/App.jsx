@@ -3,16 +3,18 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
 } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
 import {
-  initChannels, initMessages, chooseChannel, newMessage, openModal,
+  newMessage,
   newChannel,
+  removeChannel,
+  renameChannel,
 } from './slices/chatSlice.js';
-import Login from './login.page.jsx';
-import Home from './home.page.jsx';
+import Login from './pages/login.page.jsx';
+import Home from './pages/home.page.jsx';
+import Signup from './pages/signup.page.jsx';
 import AuthContext from './contexts/index.jsx';
 
 function AuthProvider({ children }) {
@@ -35,28 +37,36 @@ function AuthProvider({ children }) {
 
 function App() {
   const dispatch = useDispatch();
-
-  const chatState = useSelector((state) => state.chat);
   const socket = io().connect();
+
+  React.useEffect(() => {
+    socket.on('newMessage', (receivedMessage) => {
+      dispatch(newMessage(receivedMessage));
+    });
+    socket.on('newChannel', (receivedChannel) => {
+      dispatch(newChannel(receivedChannel));
+    });
+    socket.on('removeChannel', (data) => {
+      const { id } = data;
+      dispatch(removeChannel(id));
+    });
+    socket.on('renameChannel', (channel) => {
+      console.log('channel :', channel);
+      dispatch(renameChannel(channel));
+    });
+  }, []);
 
   console.log('app started');
   return (
     <AuthProvider>
       <Router>
-        {/*           <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-            </ul>
-          </nav> */}
-
         <Switch>
           <Route path="/login">
             <Login />
+          </Route>
+
+          <Route path="/signup">
+            <Signup />
           </Route>
 
           <Route path="/">

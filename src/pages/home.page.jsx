@@ -1,20 +1,26 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import {
-  Formik, Field,
+  Formik, Field, Form,
 } from 'formik';
+import {
+  Dropdown, Button, ButtonGroup,
+} from 'react-bootstrap';
 import _ from 'lodash';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import addChannelModal from './addChannelModal.jsx';
-import useAuth from './hooks/index.jsx';
+
+import AddChannelModal from '../modals/AddChannelModal.jsx';
+import RemoveChannelModal from '../modals/RemoveChannelModal.jsx';
+import RenameChannelModal from '../modals/RenameChannelModal.jsx';
+import useAuth from '../hooks/index.jsx';
 import {
-  initChannels, initMessages, chooseChannel, newMessage, openModal,
-  newChannel,
-} from './slices/chatSlice.js';
+  initChannels, initMessages, chooseChannel, openAddModal, openRemoveModal,
+  setDropdownId, openRenameModal, setAuthNull,
+} from '../slices/chatSlice.js';
 
 function HomePage(props) {
   const { logIn, logOut } = useAuth();
@@ -29,12 +35,29 @@ function HomePage(props) {
   const chatState = useSelector((state) => state.chat);
   const dispatch = useDispatch();
 
-  const selectChannel = (e) => {
-    dispatch(chooseChannel(Number(e.target.id)));
+  const selectChannel = (id) => () => {
+    dispatch(chooseChannel(id));
   };
 
   const addChannel = () => {
-    dispatch(openModal());
+    dispatch(openAddModal());
+  };
+
+  const removeChannel = () => {
+    dispatch(openRemoveModal());
+  };
+
+  const openDropdown = (id) => () => {
+    dispatch(setDropdownId(id));
+  };
+
+  const renameChannel = () => {
+    dispatch(openRenameModal());
+  };
+
+  const handleLogOut = () => {
+    logOut();
+    dispatch(setAuthNull());
   };
 
   const renderChannels = (channels) => channels.map((item) => {
@@ -42,25 +65,57 @@ function HomePage(props) {
       btn: chatState.activeChannel !== item.id,
       'btn-secondary': chatState.activeChannel === item.id,
     });
+    const variant = cn({
+      null: chatState.activeChannel !== item.id,
+      secondary: chatState.activeChannel === item.id,
+    });
+    if (item.removable === true) {
+      return (
+        <li
+          className="nav-item w-100"
+          id={item.id}
+          key={item.id}
+        >
+          <div className="d-flex dropdown btn-group">
+            <Dropdown className="w-100" as={ButtonGroup}>
+              <Button
+                className={channelClass}
+                id={item.id}
+                key={item.id}
+                variant={variant}
+                onClick={selectChannel(item.id)}
+              >
+                <span className="me-1">#</span>
+                {item.name}
+              </Button>
+
+              <Dropdown.Toggle variant={variant} split id="dropdown-split-basic" />
+
+              <Dropdown.Menu onClick={openDropdown(item.id)}>
+                <Dropdown.Item onClick={removeChannel}>Удалить</Dropdown.Item>
+                <Dropdown.Item onClick={renameChannel}>Переименовать</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </li>
+      );
+    }
     return (
       <li
-        onClick={selectChannel}
         className="nav-item w-100"
         id={item.id}
         key={item.id}
       >
-        <button
-          type="button"
+        <Button
           className={channelClass}
           id={item.id}
           key={item.id}
+          variant={variant}
+          onClick={selectChannel(item.id)}
         >
           <span className="me-1">#</span>
           {item.name}
-        </button>
-        {/* #
-        {' '}
-        {item.name} */}
+        </Button>
       </li>
     );
   });
@@ -99,28 +154,13 @@ function HomePage(props) {
     }
   }, []);
 
-  React.useEffect(() => {
-    socket.on('newMessage', (receivedMessage) => {
-      dispatch(newMessage(receivedMessage));
-      console.log('chatState.channels :', chatState.channels);
-    });
-    socket.on('newChannel', (receivedChannel) => {
-      dispatch(newChannel(receivedChannel));
-      console.log('chatState: ', chatState);
-      console.log('chatState :', chatState.channels);
-      /* const newChannelIndex = chatState.channels.length - 1;
-      const { id } = chatState.channels[newChannelIndex];
-      dispatch(chooseChannel(id)); */
-    });
-  }, [chatState.channels]);
-
   return (
     <>
       <div className="d-flex flex-column h-100">
         <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
           <div className="container">
             <a className="navbar-brand" href="/">My Chat</a>
-            <button type="button" className="btn btn-primary">Выйти</button>
+            <Link to="/login"><button type="button" onClick={handleLogOut} className="btn btn-primary">Выйти</button></Link>
           </div>
         </nav>
 
@@ -163,15 +203,15 @@ function HomePage(props) {
                     {(formProps) => {
                       const { handleSubmit } = formProps;
                       return (
-                        <form className="d-flex py-1 border rounded-2" onSubmit={handleSubmit}>
+                        <Form className="d-flex py-1 border rounded-2" onSubmit={handleSubmit}>
                           <Field className="border-0 p-0 ps-2 form-control" id="textfield" name="textfield" aria-label="Новое сообщение" placeholder="Введите сообщение..." />
-                          <button type="submit" className="btn btn-group-vertical" disabled="">
+                          <Button variant="null" type="submit" className="btn btn-group-vertical" disabled="">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
                               <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
                             </svg>
                             <span className="visually-hidden">Отправить</span>
-                          </button>
-                        </form>
+                          </Button>
+                        </Form>
                       );
                     }}
                   </Formik>
@@ -182,7 +222,9 @@ function HomePage(props) {
         </div>
       </div>
 
-      {addChannelModal(socket)}
+      {AddChannelModal(socket)}
+      {RemoveChannelModal(socket)}
+      {RenameChannelModal(socket)}
     </>
   );
 }
