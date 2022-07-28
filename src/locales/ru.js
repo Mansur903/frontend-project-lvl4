@@ -1,0 +1,21 @@
+export default {
+  translation: {
+    chatTitle: 'MyChat',
+    signin: 'Войти',
+    logOut: 'Выйти',
+    send: 'Отправить',
+    delete: 'Удалить',
+    rename: 'Переименовать',
+    registration: 'Регистрация',
+    username: 'Имя пользователя',
+    password: 'Пароль',
+    confirmPassword: 'Подтвердите пароль',
+    signup: 'Зарегистрироваться',
+    nickname: 'Ваш Ник',
+    wrongLoginPassword: 'Неправильно введён логин или пароль',
+    userExists: 'Пользователь с таким именем уже зарегистрирован',
+    noAccount: 'Нет аккаунта?',
+    channels: 'Каналы',
+    enterMessage: 'Введите сообщение...',
+  },
+};

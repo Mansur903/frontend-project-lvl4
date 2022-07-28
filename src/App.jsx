@@ -6,16 +6,33 @@ import {
 } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
+import i18n from 'i18next';
+import { useTranslation, initReactI18next } from 'react-i18next';
+
 import {
   newMessage,
   newChannel,
   removeChannel,
   renameChannel,
-} from './slices/chatSlice.js';
+} from './slices/chatSlice';
+import ru from './locales/ru';
 import Login from './pages/login.page.jsx';
 import Home from './pages/home.page.jsx';
 import Signup from './pages/signup.page.jsx';
 import AuthContext from './contexts/index.jsx';
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources: {
+      ru,
+    },
+    lng: 'ru',
+
+    interpolation: {
+      escapeValue: false,
+    },
+  });
 
 function AuthProvider({ children }) {
   const [loggedIn, setLoggedIn] = React.useState(false);

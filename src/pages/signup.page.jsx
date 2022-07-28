@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import { object, string } from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { authSuccess, setAuthNull } from '../slices/chatSlice.js';
 import SignupImage from '../../images/avatar.jpg';
@@ -37,6 +38,8 @@ function SignupPage() {
     history.push('/login');
   };
 
+  const { t } = useTranslation();
+
   const handleLogOut = () => {
     logOut();
     goLogin();
@@ -47,8 +50,8 @@ function SignupPage() {
     <>
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
-          <a className="navbar-brand" href="/">My Chat</a>
-          {chatState.authorized ? <button type="button" onClick={handleLogOut} className="btn btn-primary">Выйти</button> : null}
+          <a className="navbar-brand" href="/">{t('chatTitle')}</a>
+          {chatState.authorized ? <button type="button" onClick={handleLogOut} className="btn btn-primary">{t('logout')}</button> : null}
         </div>
       </nav>
       <div className="container-fluid h-100">
@@ -82,29 +85,29 @@ function SignupPage() {
                 >
                   {({ errors, touched }) => (
                     <Form className="w-50">
-                      <h1 className="text-center mb-4">Регистрация</h1>
+                      <h1 className="text-center mb-4">{t('')}</h1>
                       <div className="form-floating mb-3">
                         <Field className="form-control" name="username" id="username" required />
-                        <label className="form-label" htmlFor="username">Имя пользователя</label>
+                        <label className="form-label" htmlFor="username">{t('username')}</label>
                         {errors.username && touched.username ? (<div className="error-field">{errors.username}</div>) : null}
                       </div>
                       <div className="form-floating mb-3">
                         <Field className="form-control" type="password" name="password" id="password" required />
-                        <label className="form-label" htmlFor="password">Пароль</label>
+                        <label className="form-label" htmlFor="password">{t('password')}</label>
                         {errors.password && touched.password ? (<div className="error-field">{errors.password}</div>) : null}
                       </div>
                       <div className="form-floating mb-3">
                         <Field name="confirmPassword" required autoComplete="new-password" type="password" id="confirmPassword" className="form-control" />
-                        <label className="form-label" htmlFor="confirmPassword">Подтвердите пароль</label>
+                        <label className="form-label" htmlFor="confirmPassword">{t('confirmPassword')}</label>
                         {errors.confirmPassword && touched.confirmPassword ? (<div className="error-field">{errors.confirmPassword}</div>) : null}
                       </div>
-                      <Button type="submit" className="w-100 btn btn-outline-primary" variant="null">Зарегистрироваться</Button>
+                      <Button type="submit" className="w-100 btn btn-outline-primary" variant="null">{t('signup')}</Button>
                     </Form>
                   )}
                 </Formik>
               </div>
             </div>
-            <div className="error-field row justify-content-center align-content-center m-10">{registered === null ? null : 'Пользователь с таким именем уже зарегистрирован'}</div>
+            <div className="error-field row justify-content-center align-content-center m-10">{registered === null ? null : t('userExists')}</div>
           </div>
         </div>
       </div>

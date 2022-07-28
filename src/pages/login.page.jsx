@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { authSuccess, authError, setAuthNull } from '../slices/chatSlice.js';
 import LoginImage from '../../images/hexlet-image.jpg';
 import useAuth from '../hooks/index.jsx';
@@ -31,6 +32,8 @@ function LoginForm() {
     history.push('/');
   };
 
+  const { t } = useTranslation();
+
   const handleLogOut = () => {
     logOut();
     dispatch(authError());
@@ -46,8 +49,8 @@ function LoginForm() {
     <div className="d-flex flex-column h-100">
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
-          <a className="navbar-brand" href="/">My Chat</a>
-          {chatState.authorized ? <button type="button" onClick={handleLogOut} className="btn btn-primary">Выйти</button> : null}
+          <a className="navbar-brand" href="/">{t('chatTitle')}</a>
+          {chatState.authorized ? <button type="button" onClick={handleLogOut} className="btn btn-primary">{t('logout')}</button> : null}
         </div>
       </nav>
       <div className="container-fluid h-100">
@@ -79,27 +82,30 @@ function LoginForm() {
                 >
                   {({ errors, touched }) => (
                     <Form className="col-12 col-md-6 mt-3 mt-mb-0">
-                      <h1 className="text-center mb-4">Войти</h1>
+                      <h1 className="text-center mb-4">{t('signin')}</h1>
                       <div className="form-floating mb-3">
-                        <Field className="form-control" name="username" id="username" placeholder="Ваш ник" required />
-                        <label htmlFor="username">Ваш ник</label>
+                        <Field className="form-control" name="username" id="username" placeholder={t('nickname')} required />
+                        <label htmlFor="username">{t('nickname')}</label>
                         {errors.username && touched.username ? (<div className="error-field">{errors.username}</div>) : null}
                       </div>
                       <div className="form-floating mb-4">
-                        <Field className="form-control" name="password" id="password" placeholder="Ваш ник" type="password" />
-                        <label htmlFor="password">Пароль</label>
+                        <Field className="form-control" name="password" id="password" placeholder={t('password')} type="password" />
+                        <label htmlFor="password">{t('password')}</label>
                         {errors.password && touched.password ? (<div className="error-field">{errors.password}</div>) : null}
                       </div>
-                      <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit">Войти</Button>
-                      <div className={errorField}>Неправильно введён логин или пароль</div>
+                      <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit">{t('signin')}</Button>
+                      <div className={errorField}>{t('wrongLoginPassword')}</div>
                     </Form>
                   )}
                 </Formik>
               </div>
               <div className="card-footer p-4">
                 <div className="text-center">
-                  <span>Нет аккаунта? </span>
-                  <a href="/signup">Регистрация</a>
+                  <span>
+                    {t('noAccount')}
+                    {' '}
+                  </span>
+                  <a href="/signup">{t('registration')}</a>
                 </div>
               </div>
             </div>
