@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { authSuccess, setAuthNull } from '../slices/chatSlice.js';
+import { authSuccess, setAuthNull, setUser } from '../slices/chatSlice.js';
 import SignupImage from '../../images/avatar.jpg';
 import useAuth from '../hooks/index.jsx';
 
@@ -72,9 +72,10 @@ function SignupPage() {
                   onSubmit={(values) => {
                     axios.post('/api/v1/signup', values)
                       .then((response) => {
-                        console.log(response);
+                        dispatch(setUser(response.data.username));
                         dispatch(authSuccess());
                         localStorage.token = response.data.token;
+                        localStorage.username = response.data.username;
                         goHome();
                       })
                       .catch((error) => {
@@ -85,7 +86,7 @@ function SignupPage() {
                 >
                   {({ errors, touched }) => (
                     <Form className="w-50">
-                      <h1 className="text-center mb-4">{t('')}</h1>
+                      <h1 className="text-center mb-4">{t('registration')}</h1>
                       <div className="form-floating mb-3">
                         <Field className="form-control" name="username" id="username" required />
                         <label className="form-label" htmlFor="username">{t('username')}</label>

@@ -12,16 +12,20 @@ const initialState = {
     rename: false,
   },
   clickedDropdownId: null,
+  username: null,
 };
 
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
+    setUser: (state, action) => {
+      const newState = state;
+      newState.username = action.payload;
+    },
     initChannels: (state, action) => {
       const newState = state;
       newState.channels = [...action.payload];
-      return newState;
     },
     initMessages: (state, action) => {
       const newState = state;
@@ -98,7 +102,7 @@ const chatSlice = createSlice({
 export const {
   initChannels, initMessages, chooseChannel, newMessage, authError, authSuccess, openAddModal,
   closeModal, newChannel, openRemoveModal, setDropdownId, removeChannel, openRenameModal, renameChannel,
-  setAuthNull,
+  setAuthNull, setUser,
 } = chatSlice.actions;
 
 // По умолчанию экспортируется редьюсер сгенерированный слайсом

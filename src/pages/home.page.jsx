@@ -13,6 +13,7 @@ import _ from 'lodash';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import filter from 'leo-profanity';
 
 import AddChannelModal from '../modals/AddChannelModal.jsx';
 import RemoveChannelModal from '../modals/RemoveChannelModal.jsx';
@@ -126,9 +127,15 @@ function HomePage(props) {
   const renderMessages = () => {
     const { activeChannel } = chatState;
     const messages = chatState.messages
-      .filter((item) => item.channel === Number(activeChannel))
-      .map((item) => item.textfield);
-    return messages.map((item) => <div className="chat-messages overflow-auto px-5" key={_.uniqueId()}>{item}</div>);
+      .filter((item) => item.channel === Number(activeChannel));
+    return messages.map((item) => (
+      <div className="chat-messages text-break mb-2" key={_.uniqueId()}>
+        <b>{item.username}</b>
+        :
+        {' '}
+        {item.textfield}
+      </div>
+    ));
   };
 
   const getData = () => {
@@ -156,6 +163,10 @@ function HomePage(props) {
       getData();
     }
   }, []);
+
+  const activeChannelName = (id) => chatState.channels.filter((channel) => channel.id === id);
+  const [channel] = activeChannelName(chatState.activeChannel);
+  const messagesCounter = () => chatState.messages.filter((message) => message.channel === chatState.activeChannel).length;
 
   return (
     <>
@@ -187,8 +198,16 @@ function HomePage(props) {
             <div className="col p-0 h-100">
               <div className="d-flex flex-column h-100">
                 <div className="bg-light mb-4 p-3 shadow-sm small">
-                  <p className="m-0" />
-                  <span className="text-muted" />
+                  <p className="m-0">
+                    <b>
+                      #
+                      {' '}
+                      {channel === undefined ? null : channel.name}
+                    </b>
+                  </p>
+                  <span className="text-muted">
+                    {t('messagesCounter', { count: messagesCounter() })}
+                  </span>
                 </div>
                 <div className="chat-messages overflow-auto px-5 " id="messages-box">
                   {renderMessages()}
@@ -197,8 +216,8 @@ function HomePage(props) {
                   <Formik
                     initialValues={{ textfield: '' }}
                     onSubmit={(values, { resetForm }) => {
-                      const message = values;
-                      message.channel = Number(chatState.activeChannel);
+                      const filteredValues = { textfield: filter.clean(values.textfield) };
+                      const message = { ...filteredValues, channel: Number(chatState.activeChannel), username: localStorage.username };
                       socket.emit('newMessage', message);
                       resetForm();
                     }}

@@ -1,6 +1,6 @@
 export default {
   translation: {
-    chatTitle: 'MyChat',
+    chatTitle: 'Webteam Chat',
     signin: 'Войти',
     logOut: 'Выйти',
     send: 'Отправить',
@@ -17,5 +17,18 @@ export default {
     noAccount: 'Нет аккаунта?',
     channels: 'Каналы',
     enterMessage: 'Введите сообщение...',
+    createChannel: 'Создать канал',
+    channelCreated: 'Канал создан!',
+    cancel: 'Отменить',
+    create: 'Создать',
+    deleteChannel: 'Удалить канал',
+    areYouSure: 'Уверены?',
+    channelRenamed: 'Канал переименован!',
+    channelExists: 'Такое название канала уже существует!',
+    renameChannel: 'Переименовать канал',
+    channelDeleted: 'Канал удалён',
+    messagesCounter_one: '{{count}} сообщение',
+    messagesCounter_few: '{{count}} сообщения',
+    messagesCounter_many: '{{count}} сообщений',
   },
 };

@@ -12,7 +12,9 @@ import {
 
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { authSuccess, authError, setAuthNull } from '../slices/chatSlice.js';
+import {
+  authSuccess, authError, setAuthNull, setUser,
+} from '../slices/chatSlice.js';
 import LoginImage from '../../images/hexlet-image.jpg';
 import useAuth from '../hooks/index.jsx';
 // Хуки находятся в react-redux
@@ -70,8 +72,11 @@ function LoginForm() {
                   onSubmit={(values) => {
                     axios.post('/api/v1/login', values)
                       .then((response) => {
+                        console.log('response :', response);
+                        dispatch(setUser(response.data.username));
                         dispatch(authSuccess());
                         localStorage.token = response.data.token;
+                        localStorage.username = response.data.username;
                         goHome();
                       })
                       .catch((error) => {

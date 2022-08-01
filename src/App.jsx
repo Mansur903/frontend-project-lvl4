@@ -7,7 +7,12 @@ import {
 import { useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
 import i18n from 'i18next';
-import { useTranslation, initReactI18next } from 'react-i18next';
+import { initReactI18next } from 'react-i18next';
+import { ToastContainer } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+// какая-то проблема с css-loader, приходится использовать строчку ниже
+import { injectStyle } from 'react-toastify/dist/inject-style';
+import { Provider, ErrorBoundary } from '@rollbar/react';
 
 import {
   newMessage,
@@ -34,6 +39,8 @@ i18n
     },
   });
 
+injectStyle();
+
 function AuthProvider({ children }) {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const logIn = () => setLoggedIn(true);
@@ -52,11 +59,21 @@ function AuthProvider({ children }) {
   );
 }
 
+const rollbarConfig = {
+  accessToken: '979dfcda02894ef0a50090c43a45b499',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+  payload: {
+    environment: 'development',
+  },
+};
+
 function App() {
   const dispatch = useDispatch();
   const socket = io().connect();
 
   React.useEffect(() => {
+    console.log('socket :', socket);
     socket.on('newMessage', (receivedMessage) => {
       dispatch(newMessage(receivedMessage));
     });
@@ -75,23 +92,28 @@ function App() {
 
   console.log('app started');
   return (
-    <AuthProvider>
-      <Router>
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
+    <Provider config={rollbarConfig}>
+      <ErrorBoundary>
+        <AuthProvider>
+          <Router>
+            <Switch>
+              <Route path="/login">
+                <Login />
+              </Route>
 
-          <Route path="/signup">
-            <Signup />
-          </Route>
+              <Route path="/signup">
+                <Signup />
+              </Route>
 
-          <Route path="/">
-            <Home socket={socket} />
-          </Route>
-        </Switch>
-      </Router>
-    </AuthProvider>
+              <Route path="/">
+                <Home socket={socket} />
+              </Route>
+            </Switch>
+          </Router>
+        </AuthProvider>
+        <ToastContainer />
+      </ErrorBoundary>
+    </Provider>
   );
 }
 
