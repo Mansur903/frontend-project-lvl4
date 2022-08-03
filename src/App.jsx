@@ -25,6 +25,7 @@ import Login from './pages/login.page.jsx';
 import Home from './pages/home.page.jsx';
 import Signup from './pages/signup.page.jsx';
 import AuthContext from './contexts/index.jsx';
+import PageNotFound from './pages/404.page.jsx';
 
 i18n
   .use(initReactI18next)
@@ -48,6 +49,7 @@ function AuthProvider({ children }) {
     localStorage.removeItem('token');
     setLoggedIn(false);
   };
+  console.log('logOut :', logOut);
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
     <AuthContext.Provider value={{
@@ -60,7 +62,7 @@ function AuthProvider({ children }) {
 }
 
 const rollbarConfig = {
-  accessToken: '979dfcda02894ef0a50090c43a45b499',
+  accessToken: process.env.REACT_APP_ROLLBAR,
   captureUncaught: true,
   captureUnhandledRejections: true,
   payload: {
@@ -96,19 +98,25 @@ function App() {
       <ErrorBoundary>
         <AuthProvider>
           <Router>
-            <Switch>
-              <Route path="/login">
-                <Login />
-              </Route>
+            <div className="d-flex flex-column h-100">
+              <Switch>
+                <Route path="/login">
+                  <Login />
+                </Route>
 
-              <Route path="/signup">
-                <Signup />
-              </Route>
+                <Route path="/signup">
+                  <Signup />
+                </Route>
 
-              <Route path="/">
-                <Home socket={socket} />
-              </Route>
-            </Switch>
+                <Route exact path="/">
+                  <Home socket={socket} />
+                </Route>
+
+                <Route path="*">
+                  <PageNotFound />
+                </Route>
+              </Switch>
+            </div>
           </Router>
         </AuthProvider>
         <ToastContainer />

@@ -12,9 +12,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { authSuccess, setAuthNull, setUser } from '../slices/chatSlice.js';
+import { authSuccess, setUser } from '../slices/chatSlice.js';
 import SignupImage from '../../images/avatar.jpg';
-import useAuth from '../hooks/index.jsx';
+import Header from '../Header.jsx';
 
 const userSchema = object({
   username: string().min(3, 'От 3 до 20 символов').max(20, 'От 3 до 20 символов').required('Это обязательное поле'),
@@ -23,7 +23,6 @@ const userSchema = object({
 });
 
 function SignupPage() {
-  const { logOut } = useAuth();
   const [registered, setStatus] = useState(null);
   const dispatch = useDispatch();
   const chatState = useSelector((state) => state.chat);
@@ -34,26 +33,11 @@ function SignupPage() {
     history.push('/');
   };
 
-  const goLogin = () => {
-    history.push('/login');
-  };
-
   const { t } = useTranslation();
-
-  const handleLogOut = () => {
-    logOut();
-    goLogin();
-    dispatch(setAuthNull());
-  };
 
   return (
     <>
-      <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-        <div className="container">
-          <a className="navbar-brand" href="/">{t('chatTitle')}</a>
-          {chatState.authorized ? <button type="button" onClick={handleLogOut} className="btn btn-primary">{t('logout')}</button> : null}
-        </div>
-      </nav>
+      <Header />
       <div className="container-fluid h-100">
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-8 col-xxl-6">

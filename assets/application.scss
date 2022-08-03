@@ -8,5 +8,8 @@
   display: none;
 }
 
-
+.chat-messages {
+  display: flex;
+  flex-direction: column-reverse;
+}
 

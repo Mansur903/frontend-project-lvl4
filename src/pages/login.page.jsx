@@ -13,10 +13,10 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  authSuccess, authError, setAuthNull, setUser,
+  authSuccess, authError, setUser,
 } from '../slices/chatSlice.js';
 import LoginImage from '../../images/hexlet-image.jpg';
-import useAuth from '../hooks/index.jsx';
+import Header from '../Header.jsx';
 // Хуки находятся в react-redux
 
 const userSchema = object({
@@ -25,7 +25,6 @@ const userSchema = object({
 });
 
 function LoginForm() {
-  const { logOut } = useAuth();
   const history = useHistory();
   const dispatch = useDispatch();
   const chatState = useSelector((state) => state.chat);
@@ -36,25 +35,14 @@ function LoginForm() {
 
   const { t } = useTranslation();
 
-  const handleLogOut = () => {
-    logOut();
-    dispatch(authError());
-    setAuthNull();
-  };
-
   const errorField = cn({
     'error-field': !chatState.authorized,
     'no-error-field': chatState.authorized === null,
   });
 
   return (
-    <div className="d-flex flex-column h-100">
-      <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-        <div className="container">
-          <a className="navbar-brand" href="/">{t('chatTitle')}</a>
-          {chatState.authorized ? <button type="button" onClick={handleLogOut} className="btn btn-primary">{t('logout')}</button> : null}
-        </div>
-      </nav>
+    <>
+      <Header />
       <div className="container-fluid h-100">
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-8 col-xxl-6">
@@ -117,7 +105,8 @@ function LoginForm() {
           </div>
         </div>
       </div>
-    </div>
+
+    </>
   );
 }
 
