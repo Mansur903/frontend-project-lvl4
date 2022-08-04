@@ -29,6 +29,7 @@ import Header from '../Header.jsx';
 function HomePage(props) {
   const { logIn, logOut } = useAuth();
   const history = useHistory();
+
   const goLogin = () => {
     history.push('/login');
   };
