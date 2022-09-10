@@ -1,9 +1,20 @@
-import { configureStore } from '@reduxjs/toolkit';
-import chatReducer from './chatSlice.js';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import channelsReducer from './channelsInfo.js';
+import messagesReducer from './messagesInfo.js';
+import modalReducer from './modal.js';
+import dropdownReducer from './dropdown.js';
+
+const rootReducer = combineReducers({
+  channels: channelsReducer,
+  messages: messagesReducer,
+  modal: modalReducer,
+  dropdown: dropdownReducer,
+});
+
+export const initStore = () => configureStore({
+  reducer: rootReducer,
+});
 
 export default configureStore({
-  reducer: {
-    // chat – имя внутри объекта состояния state.counter
-    chat: chatReducer,
-  },
+  reducer: rootReducer,
 });

@@ -1,120 +1,111 @@
 import React from 'react';
 import {
-  Formik, Form, Field,
+  Formik, Form,
 } from 'formik';
 import { object, string } from 'yup';
 import axios from 'axios';
 import cn from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
 import {
   Button,
 } from 'react-bootstrap';
-
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  authSuccess, authError, setUser,
-} from '../slices/chatSlice.js';
+
 import LoginImage from '../../images/hexlet-image.jpg';
-import Header from '../Header.jsx';
-// Хуки находятся в react-redux
+import routes from '../routes';
+import TextField from '../components/TextField.jsx';
+import useAuth from '../hooks/auth.jsx';
+import showToast from '../utilities.js';
 
-const userSchema = object({
-  username: string().min(3, 'Должно быть 3 или более символов').required('Это обязательное поле'),
-  password: string().min(4, 'Должно быть 4 или более символов').required('Это обязательное поле'),
-});
-
-function LoginForm() {
+function LoginPage() {
   const history = useHistory();
-  const dispatch = useDispatch();
-  const chatState = useSelector((state) => state.chat);
+  const { logIn, loggedIn, logOut } = useAuth();
 
   const goHome = () => {
-    history.push('/');
+    history.push(routes.homePath);
   };
 
   const { t } = useTranslation();
 
-  const errorField = cn({
-    'error-field': !chatState.authorized,
-    'no-error-field': chatState.authorized === null,
+  const userSchema = object({
+    username: string().min(3, t('mustBeThreeOrMore')).required(t('requiredField')),
+    password: string().min(4, t('mustBeFourOrMore')).required(t('requiredField')),
   });
 
+  const errorClassNames = cn({
+    'error-field': !loggedIn,
+    'no-error-field': loggedIn === null,
+  });
+
+  const showErrorToast = (e) => {
+    console.log(e);
+    if (e.response.status === 401) {
+      showToast('error', t('authorizeError'));
+      return;
+    }
+    if (e.response.message === 'Network Error') {
+      showToast('error', t('downloadingError'));
+      return;
+    }
+    showToast('error', t('unknownError'));
+  };
+
+  const handleSubmit = (values) => (e) => {
+    e.preventDefault();
+    axios.post(routes.httpLoginPath(), values)
+      .then((response) => {
+        logIn(response);
+        goHome();
+      })
+      .catch((error) => {
+        logOut(false);
+        showErrorToast(error);
+      });
+  };
+
   return (
-    <>
-      <Header />
-      <div className="container-fluid h-100">
-        <div className="row justify-content-center align-content-center h-100">
-          <div className="col-12 col-md-8 col-xxl-6">
-            <div className="card shadow-sm">
-              <div className="card-body row p-5">
-                <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                  <img src={LoginImage} alt="Войти" className="rounded-circle" />
-                </div>
-                <Formik
-                  initialValues={{
-                    username: '',
-                    password: '',
-                  }}
-                  validationSchema={userSchema}
-                  onSubmit={(values) => {
-                    axios.post('/api/v1/login', values)
-                      .then((response) => {
-                        console.log('response :', response);
-                        dispatch(setUser(response.data.username));
-                        dispatch(authSuccess());
-                        localStorage.token = response.data.token;
-                        localStorage.username = response.data.username;
-                        goHome();
-                      })
-                      .catch((error) => {
-                        dispatch(authError());
-                        console.log(error);
-                      });
-                  }}
-                >
-                  {({ errors, touched }) => (
-                    <Form className="col-12 col-md-6 mt-3 mt-mb-0">
-                      <h1 className="text-center mb-4">{t('signin')}</h1>
-                      <div className="form-floating mb-3">
-                        <Field className="form-control" name="username" id="username" placeholder={t('nickname')} required />
-                        <label htmlFor="username">{t('nickname')}</label>
-                        {errors.username && touched.username ? (<div className="error-field">{errors.username}</div>) : null}
-                      </div>
-                      <div className="form-floating mb-4">
-                        <Field className="form-control" name="password" id="password" placeholder={t('password')} type="password" />
-                        <label htmlFor="password">{t('password')}</label>
-                        {errors.password && touched.password ? (<div className="error-field">{errors.password}</div>) : null}
-                      </div>
-                      <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit">{t('signin')}</Button>
-                      <div className={errorField}>{t('wrongLoginPassword')}</div>
-                    </Form>
-                  )}
-                </Formik>
+    <div className="container-fluid h-100">
+      <div className="row justify-content-center align-content-center h-100">
+        <div className="col-12 col-md-8 col-xxl-6">
+          <div className="card shadow-sm">
+            <div className="card-body row p-5">
+              <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
+                <img src={LoginImage} alt="Войти" className="rounded-circle" />
               </div>
-              <div className="card-footer p-4">
-                <div className="text-center">
-                  <span>
-                    {t('noAccount')}
-                    {' '}
-                  </span>
-                  <a href="/signup">{t('registration')}</a>
-                </div>
+              <Formik
+                initialValues={{
+                  username: '',
+                  password: '',
+                }}
+                validateOnMount
+                validationSchema={userSchema}
+              >
+                {({
+                  errors, touched, handleChange, handleBlur, values, isValid,
+                }) => (
+                  <Form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={handleSubmit(values)}>
+                    <h1 className="text-center mb-4">{t('signin')}</h1>
+                    <TextField name="username" placeholder={t('nickname')} errors={errors} handleChange={handleChange} handleBlur={handleBlur} touched={touched} />
+                    <TextField name="password" placeholder={t('password')} errors={errors} handleChange={handleChange} handleBlur={handleBlur} touched={touched} />
+                    <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit" disabled={!isValid}>{t('signin')}</Button>
+                    <div className={errorClassNames}>{t('wrongLoginPassword')}</div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+            <div className="card-footer p-4">
+              <div className="text-center">
+                <span>
+                  {t('noAccount')}
+                  {' '}
+                </span>
+                <a href={routes.signupPath}>{t('registration')}</a>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-    </>
-  );
-}
-
-function LoginPage() {
-  return (
-    <>
-      {LoginForm()}
-    </>
+    </div>
   );
 }
 

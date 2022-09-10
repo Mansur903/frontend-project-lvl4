@@ -4,6 +4,7 @@ root: true
 
 plugins:
   - functional
+  - react-hooks
 
 extends:
   - airbnb
@@ -37,3 +38,4 @@ rules:
   functional/no-throw-statement: 0
   max-len: "off"
   jsx-a11y/label-has-associated-control: "off"
+  react-hooks/rules-of-hooks: "error"

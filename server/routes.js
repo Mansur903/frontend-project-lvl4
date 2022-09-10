@@ -43,10 +43,7 @@ export default (app, defaultState = {}) => {
   const state = buildState(defaultState);
 
   app.io.on('connect', (socket) => {
-    console.log({ 'socket.id': socket.id });
-
     socket.on('newMessage', (message, acknowledge = _.noop) => {
-      console.log('message :', message);
       const messageWithId = {
         ...message,
         id: getNextId(),
@@ -69,7 +66,6 @@ export default (app, defaultState = {}) => {
     });
 
     socket.on('removeChannel', ({ id }, acknowledge = _.noop) => {
-      console.log('id-server :', id);
       const channelId = Number(id);
       state.channels = state.channels.filter((c) => c.id !== channelId);
       state.messages = state.messages.filter((m) => m.channelId !== channelId);

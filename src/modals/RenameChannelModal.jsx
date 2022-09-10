@@ -1,48 +1,28 @@
 import React, { useRef, useEffect } from 'react';
-import { useFormik } from 'formik';
 import {
-  Modal, FormGroup, FormControl, Form, Button,
+  Formik, Field, Form,
+} from 'formik';
+import {
+  Modal, FormGroup, Button,
 } from 'react-bootstrap';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import filter from 'leo-profanity';
+import { object, string } from 'yup';
 
-import { closeModal } from '../slices/chatSlice.js';
+import { modalActions } from '../slices/modal';
+import showToast, { selectors } from '../utilities';
+import useApi from '../hooks/api.jsx';
 
-function RenameChannelModal(props) {
-  const socket = props;
+function RenameChannelModal() {
+  const socket = useApi();
   const dispatch = useDispatch();
-  const chatState = useSelector((state) => state.chat);
+  const { channels, dropdown, modal } = selectors();
   const inputRef = useRef(null);
   const { t } = useTranslation();
-  const notifySuccess = () => toast.success(t('channelRenamed'), {
-    position: 'top-right',
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
 
-  const notifyError = () => toast.error(t('channelExists'), {
-    position: 'top-right',
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      channelName: '',
-    },
-    onSubmit: (e) => {
-      e.preventDefault();
-    },
+  const formSchema = object({
+    channelName: string().required(t('requiredField')),
   });
 
   useEffect(() => {
@@ -50,41 +30,51 @@ function RenameChannelModal(props) {
   });
 
   const handleClose = () => {
-    dispatch(closeModal());
+    dispatch(modalActions.closeModal());
   };
 
-  const handleRenameChannel = (id) => (e) => {
-    e.preventDefault();
-    const name = filter.clean(formik.values.channelName);
-    const addedChannels = chatState.channels.map((channel) => channel.name);
-    if (!addedChannels.includes(formik.values.channelName)) {
+  const handleRenameChannel = (id, values) => {
+    const name = filter.clean(values.channelName);
+    const addedChannels = channels.map((channel) => channel.name);
+    if (!addedChannels.includes(values.channelName)) {
       socket.emit('renameChannel', { id, name });
-      notifySuccess();
+      showToast('success', t('channelRenamed'));
     } else {
-      console.log('Такое название канала уже существует');
-      notifyError();
+      showToast('error', t('channelExists'));
     }
     handleClose();
   };
 
   return (
-    <Modal show={chatState.modal.rename} onHide={handleClose}>
+    <Modal show={modal.rename} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('renameChannel')}</Modal.Title>
       </Modal.Header>
+      <Formik
+        initialValues={{ channelName: '' }}
+        validationSchema={formSchema}
+        onSubmit={(values) => {
+          handleRenameChannel(dropdown.clickedDropdownId, values);
+        }}
+      >
+        {(formProps) => (
+          <Form>
+            <Modal.Body>
+              <FormGroup className="form-group">
+                <Field className="mb-2 form-control" data-testid="input-body" id="channelName" name="channelName" type="text" />
+                {formProps.errors.channelName ? (
+                  <div className="error-field">{formProps.errors.channelName}</div>
+                ) : null}
+              </FormGroup>
+            </Modal.Body>
 
-      <Form>
-        <Modal.Body>
-          <FormGroup className="form-group">
-            <FormControl data-testid="input-body" ref={inputRef} id="channelName" name="channelName" type="text" onChange={formik.handleChange} value={formik.values.channel} />
-          </FormGroup>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('cancel')}</Button>
-          <Button className="btn btn-primary" type="submit" onClick={handleRenameChannel(chatState.clickedDropdownId)}>{t('rename')}</Button>
-        </Modal.Footer>
-      </Form>
+            <Modal.Footer>
+              <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('cancel')}</Button>
+              <Button className="btn btn-primary" type="submit">{t('rename')}</Button>
+            </Modal.Footer>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 }

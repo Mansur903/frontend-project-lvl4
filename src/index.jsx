@@ -1,19 +1,14 @@
 import 'core-js/stable/index.js';
 import 'regenerator-runtime/runtime.js';
-
 import '../assets/application.scss';
-
-import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import App from './App.jsx';
-import store from './slices/store.js';
+import { io } from 'socket.io-client';
 
-console.log('render!');
+import init from './init.jsx';
+
+const socket = io().connect();
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  init(socket),
   document.querySelector('#chat'),
 );

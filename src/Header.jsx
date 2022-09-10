@@ -1,23 +1,16 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import useAuth from './hooks/index.jsx';
-import {
-  setAuthNull,
-  authError,
-} from './slices/chatSlice';
+import useAuth from './hooks/auth.jsx';
 
 function Header() {
   const { logOut } = useAuth();
-  const dispatch = useDispatch();
   const { t } = useTranslation();
+  console.log('render header!');
 
   const handleLogOut = () => {
-    logOut();
-    dispatch(authError());
-    dispatch(setAuthNull());
+    logOut(null);
   };
 
   return (
