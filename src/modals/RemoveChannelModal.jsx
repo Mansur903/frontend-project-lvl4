@@ -10,7 +10,7 @@ import showToast, { selectors } from '../utilities';
 import useApi from '../hooks/api.jsx';
 
 function RemoveChannelModal() {
-  const socket = useApi();
+  const api = useApi();
 
   const { modal, dropdown } = selectors();
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ function RemoveChannelModal() {
 
   const handleDeleteChannel = (id) => (e) => {
     e.preventDefault();
-    socket.emit('removeChannel', { id });
+    api.removeChannel(id);
     handleClose();
     showToast('success', t('channelDeleted'));
   };

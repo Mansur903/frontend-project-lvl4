@@ -6,9 +6,13 @@ import { io } from 'socket.io-client';
 
 import init from './init.jsx';
 
-const socket = io().connect();
+const app = async () => {
+  const socket = io().connect();
+  const vdom = await init(socket);
+  ReactDOM.render(
+    vdom,
+    document.querySelector('#chat'),
+  );
+};
 
-ReactDOM.render(
-  init(socket),
-  document.querySelector('#chat'),
-);
+app();

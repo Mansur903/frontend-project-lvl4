@@ -15,7 +15,7 @@ import showToast, { selectors } from '../utilities';
 import useApi from '../hooks/api.jsx';
 
 function AddChannelModal() {
-  const socket = useApi();
+  const api = useApi();
   const { modal, channels } = selectors();
   const dispatch = useDispatch();
   const inputRef = useRef(null);
@@ -37,7 +37,7 @@ function AddChannelModal() {
     const newChannel = { name: filter.clean(values.channelName) };
     const addedChannels = channels.map((channel) => channel.name);
     if (!addedChannels.includes(values.channelName)) {
-      socket.emit('newChannel', newChannel);
+      api.newChannel(newChannel);
       showToast('success', t('channelCreated'));
     } else {
       showToast('error', t('channelExists'));

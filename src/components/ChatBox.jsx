@@ -18,7 +18,7 @@ function ChatBox() {
   });
   const { t } = useTranslation();
   const { activeChannel } = selectors();
-  const socket = useApi();
+  const api = useApi();
 
   return (
     <>
@@ -31,7 +31,7 @@ function ChatBox() {
           onSubmit={(values, { resetForm }) => {
             const filteredValues = { textfield: filter.clean(values.textfield) };
             const message = { ...filteredValues, channel: +activeChannel, username: localStorage.username };
-            socket.emit('newMessage', message);
+            api.newMessage(message);
             resetForm();
           }}
         >

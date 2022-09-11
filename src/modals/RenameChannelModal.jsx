@@ -15,7 +15,7 @@ import showToast, { selectors } from '../utilities';
 import useApi from '../hooks/api.jsx';
 
 function RenameChannelModal() {
-  const socket = useApi();
+  const api = useApi();
   const dispatch = useDispatch();
   const { channels, dropdown, modal } = selectors();
   const inputRef = useRef(null);
@@ -37,7 +37,7 @@ function RenameChannelModal() {
     const name = filter.clean(values.channelName);
     const addedChannels = channels.map((channel) => channel.name);
     if (!addedChannels.includes(values.channelName)) {
-      socket.emit('renameChannel', { id, name });
+      api.renameChannel({ id, name });
       showToast('success', t('channelRenamed'));
     } else {
       showToast('error', t('channelExists'));
