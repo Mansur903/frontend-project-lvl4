@@ -2,6 +2,7 @@ import React from 'react';
 import i18n from 'i18next';
 import { injectStyle } from 'react-toastify/dist/inject-style';
 import { Provider } from 'react-redux';
+import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
 import { initReactI18next } from 'react-i18next';
 
 import App from './App.jsx';
@@ -13,25 +14,27 @@ import ApiContext from './contexts/api.jsx';
 import AuthContext from './contexts/auth.jsx';
 
 function AuthProvider({ children }) {
-  const [loggedIn, setLoggedIn] = React.useState(null);
+  const [user, setUser] = React.useState(localStorage.user ? JSON.parse(localStorage.user).username : undefined);
+
   const logOut = (param) => {
-    localStorage.removeItem('token');
-    setLoggedIn(param);
+    localStorage.removeItem('user');
+    setUser(param);
   };
-  const logIn = (response) => {
-    localStorage.token = response.data.token;
-    localStorage.username = response.data.username;
-    setLoggedIn(true);
+
+  const logIn = ({ token, username }) => {
+    localStorage.setItem('user', JSON.stringify({ username, token }));
+    setUser(username);
   };
 
   const getAuthHeader = () => {
-    if (localStorage.token) return { Authorization: `Bearer ${localStorage.token}` };
+    const { token } = JSON.parse(localStorage.user);
+    if (token) return { Authorization: `Bearer ${token}` };
     return {};
   };
 
   const providerValues = React.useMemo(() => ({
-    logOut, logIn, loggedIn, setLoggedIn, getAuthHeader,
-  }), [logOut, logIn, loggedIn, setLoggedIn, getAuthHeader]);
+    logOut, logIn, getAuthHeader, user,
+  }), [logOut, logIn, getAuthHeader, user]);
 
   return (
     <AuthContext.Provider value={providerValues}>
@@ -40,7 +43,7 @@ function AuthProvider({ children }) {
   );
 }
 
-const api = (socket) => ({
+const getApi = (socket) => ({
   newMessage: (message) => socket.emit('newMessage', message),
   newChannel: (channel) => socket.emit('newChannel', channel),
   removeChannel: (id) => socket.emit('removeChannel', { id }),
@@ -57,7 +60,6 @@ const init = async (socket) => {
   });
   socket.on('newChannel', (receivedChannel) => {
     dispatch(channelsActions.newChannel(receivedChannel));
-    dispatch(channelsActions.setActiveChannel(receivedChannel.id));
   });
   socket.on('removeChannel', (data) => {
     const { id } = data;
@@ -66,6 +68,12 @@ const init = async (socket) => {
   socket.on('renameChannel', (channel) => {
     dispatch(channelsActions.renameChannel(channel));
   });
+
+  const rollbarConfig = {
+    accessToken: process.env.REACT_APP_ROLLBAR,
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+  };
 
   await i18n
     .use(initReactI18next)
@@ -80,13 +88,17 @@ const init = async (socket) => {
     });
 
   return (
-    <AuthProvider>
-      <ApiContext.Provider value={api(socket)}>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </ApiContext.Provider>
-    </AuthProvider>
+    <RollbarProvider config={rollbarConfig}>
+      <ErrorBoundary>
+        <AuthProvider>
+          <ApiContext.Provider value={getApi(socket)}>
+            <Provider store={store}>
+              <App />
+            </Provider>
+          </ApiContext.Provider>
+        </AuthProvider>
+      </ErrorBoundary>
+    </RollbarProvider>
   );
 };
 

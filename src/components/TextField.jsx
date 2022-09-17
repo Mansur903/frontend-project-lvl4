@@ -1,24 +1,23 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
+import cn from 'classnames';
 
 function TextField(props) {
   const {
-    name, placeholder, errors, handleChange, handleBlur, touched,
+    name, placeholder, error, type, helperText, ...rest
   } = props;
 
   return (
     <Form.Group className="mb-3">
       <Form.Control
         className="field"
-        onChange={handleChange}
-        onBlur={handleBlur}
         name={name}
         id={name}
         placeholder={placeholder}
-        type={name === 'password' || name === 'confirmPassword' ? 'password' : null}
-        required
+        type={type}
+        {...rest}
       />
-      {errors[name] && touched[name] ? (<Form.Text className="error-field">{errors[name]}</Form.Text>) : null}
+      {helperText && <Form.Text className={cn({ 'error-field': error })}>{helperText}</Form.Text>}
     </Form.Group>
   );
 }

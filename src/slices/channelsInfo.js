@@ -10,36 +10,34 @@ const channelsSlice = createSlice({
   initialState,
   reducers: {
     initChannels: (state, action) => {
-      const newState = state;
-      newState.channels = [...action.payload];
+      state.channels = [...action.payload];
     },
     chooseChannel: (state, action) => {
-      const newState = state;
-      newState.activeChannel = action.payload;
+      state.activeChannel = action.payload;
     },
     newChannel: (state, action) => {
-      const newState = state;
-      newState.channels.push(action.payload);
+      state.channels.push(action.payload);
+      state.activeChannel = action.payload.id;
     },
     setActiveChannel: (state, action) => {
-      const newState = state;
-      newState.activeChannel = action.payload;
+      state.activeChannel = action.payload;
     },
     removeChannel: (state, action) => {
-      const newState = state;
       const channelId = action.payload;
-      newState.channels = newState.channels.filter((c) => c.id !== channelId);
-      newState.activeChannel = 1;
+      state.channels = state.channels.filter((c) => c.id !== channelId);
+      state.activeChannel = 1;
     },
     renameChannel: (state, action) => {
-      const newState = state;
       const channelId = Number(action.payload.id);
-      const channel = newState.channels.find((c) => c.id === channelId);
+      const channel = state.channels.find((c) => c.id === channelId);
       if (!channel) return;
       channel.name = action.payload.name;
     },
   },
 });
+
+export const getActiveChannel = ({ channels: { activeChannel } }) => activeChannel;
+export const getChannels = ({ channels: { channels } }) => channels;
 
 export const channelsActions = channelsSlice.actions;
 

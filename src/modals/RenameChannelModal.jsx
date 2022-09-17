@@ -5,21 +5,25 @@ import {
 import {
   Modal, FormGroup, Button,
 } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import filter from 'leo-profanity';
 import { object, string } from 'yup';
 
-import { modalActions } from '../slices/modal';
-import showToast, { selectors } from '../utilities';
+import { modalActions, getModalRename, getDropdownId } from '../slices/modal';
+import { getChannels } from '../slices/channelsInfo';
+import showToast from '../utilities';
 import useApi from '../hooks/api.jsx';
 
 function RenameChannelModal() {
   const api = useApi();
   const dispatch = useDispatch();
-  const { channels, dropdown, modal } = selectors();
   const inputRef = useRef(null);
   const { t } = useTranslation();
+
+  const rename = useSelector(getModalRename);
+  const channels = useSelector(getChannels);
+  const clickedDropdownId = useSelector(getDropdownId);
 
   const formSchema = object({
     channelName: string().required(t('requiredField')),
@@ -46,7 +50,7 @@ function RenameChannelModal() {
   };
 
   return (
-    <Modal show={modal.rename} onHide={handleClose}>
+    <Modal show={rename} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('renameChannel')}</Modal.Title>
       </Modal.Header>
@@ -54,7 +58,7 @@ function RenameChannelModal() {
         initialValues={{ channelName: '' }}
         validationSchema={formSchema}
         onSubmit={(values) => {
-          handleRenameChannel(dropdown.clickedDropdownId, values);
+          handleRenameChannel(clickedDropdownId, values);
         }}
       >
         {(formProps) => (

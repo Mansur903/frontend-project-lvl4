@@ -1,12 +1,12 @@
 import React from 'react';
-import _ from 'lodash';
+import { useSelector } from 'react-redux';
+import { animateScroll as scroll } from 'react-scroll';
 
-import { selectors } from '../utilities';
+import { getMessagesById } from '../slices/messagesInfo';
+import { getActiveChannel } from '../slices/channelsInfo';
 
-function Messages() {
-  const { messages, activeChannel } = selectors();
-
-  const createMessage = (user, message) => (
+function Message({ user, message }) {
+  return (
     <>
       <b>{user}</b>
       :
@@ -14,20 +14,29 @@ function Messages() {
       {message}
     </>
   );
+}
 
-  const renderMessages = () => {
-    const messagesList = messages
-      .filter((item) => item.channel === +activeChannel);
-    return messagesList.reverse().map((item) => (
-      <div className="text-break mb-2" key={_.uniqueId()}>
-        {createMessage(item.username, item.textfield)}
-      </div>
-    ));
-  };
+function Messages() {
+  const activeChannel = useSelector(getActiveChannel);
+  const messagesList = useSelector(getMessagesById(activeChannel));
+  const messages = useSelector(getMessagesById(activeChannel));
+
+  React.useEffect(() => {
+    scroll.scrollToBottom({
+      containerId: 'messages-box',
+      duration: 100,
+    });
+  }, [messages]);
+
+  const RenderMessages = React.useCallback(() => messagesList.map((item) => (
+    <div className="text-break mb-2" key={item.id}>
+      <Message user={item.username} message={item.textfield} />
+    </div>
+  )), [messages]);
 
   return (
     <div className="chat-messages overflow-auto px-5 " id="messages-box">
-      {renderMessages()}
+      <RenderMessages />
     </div>
   );
 }

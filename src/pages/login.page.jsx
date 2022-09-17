@@ -10,16 +10,19 @@ import {
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { StatusCodes } from 'http-status-codes';
 
 import LoginImage from '../../images/hexlet-image.jpg';
 import routes from '../routes';
-import TextField from '../components/TextField.jsx';
+import FormTextField from '../components/FormTextField.jsx';
 import useAuth from '../hooks/auth.jsx';
 import showToast from '../utilities.js';
 
 function LoginPage() {
   const history = useHistory();
-  const { logIn, loggedIn, logOut } = useAuth();
+  const {
+    logIn, logOut, user,
+  } = useAuth();
 
   const goHome = () => {
     history.push(routes.homePath);
@@ -33,13 +36,13 @@ function LoginPage() {
   });
 
   const errorClassNames = cn({
-    'error-field': !loggedIn,
-    'no-error-field': loggedIn === null,
+    'error-field': user === null,
+    'no-error-field': user === undefined,
   });
 
   const showErrorToast = (e) => {
     console.log(e);
-    if (e.response.status === 401) {
+    if (e.response.status === StatusCodes.UNAUTHORIZED) {
       showToast('error', t('authorizeError'));
       return;
     }
@@ -50,15 +53,15 @@ function LoginPage() {
     showToast('error', t('unknownError'));
   };
 
-  const handleSubmit = (values) => (e) => {
-    e.preventDefault();
+  const handleSubmit = (values) => {
     axios.post(routes.httpLoginPath(), values)
       .then((response) => {
-        logIn(response);
+        const { token, username } = response.data;
+        logIn({ token, username });
         goHome();
       })
       .catch((error) => {
-        logOut(false);
+        logOut(null);
         showErrorToast(error);
       });
   };
@@ -79,14 +82,15 @@ function LoginPage() {
                 }}
                 validateOnMount
                 validationSchema={userSchema}
+                onSubmit={handleSubmit}
               >
                 {({
-                  errors, touched, handleChange, handleBlur, values, isValid,
+                  isValid,
                 }) => (
-                  <Form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={handleSubmit(values)}>
+                  <Form className="col-12 col-md-6 mt-3 mt-mb-0">
                     <h1 className="text-center mb-4">{t('signin')}</h1>
-                    <TextField name="username" placeholder={t('nickname')} errors={errors} handleChange={handleChange} handleBlur={handleBlur} touched={touched} />
-                    <TextField name="password" placeholder={t('password')} errors={errors} handleChange={handleChange} handleBlur={handleBlur} touched={touched} />
+                    <FormTextField name="username" type="text" placeholder={t('nickname')} />
+                    <FormTextField name="password" type="password" placeholder={t('password')} />
                     <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit" disabled={!isValid}>{t('signin')}</Button>
                     <div className={errorClassNames}>{t('wrongLoginPassword')}</div>
                   </Form>

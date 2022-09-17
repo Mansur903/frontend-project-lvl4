@@ -5,21 +5,24 @@ import {
 import {
   Modal, FormGroup, Button,
 } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import filter from 'leo-profanity';
 import { object, string } from 'yup';
 
-import { modalActions } from '../slices/modal';
-import showToast, { selectors } from '../utilities';
+import { modalActions, getModalAdd } from '../slices/modal';
+import showToast from '../utilities';
 import useApi from '../hooks/api.jsx';
+import { getChannels } from '../slices/channelsInfo.js';
 
 function AddChannelModal() {
   const api = useApi();
-  const { modal, channels } = selectors();
   const dispatch = useDispatch();
   const inputRef = useRef(null);
   const { t } = useTranslation();
+
+  const channels = useSelector(getChannels);
+  const add = useSelector(getModalAdd);
 
   const formSchema = object({
     channelName: string().required(t('requiredField')),
@@ -46,7 +49,7 @@ function AddChannelModal() {
   };
 
   return (
-    <Modal show={modal.add} onHide={handleClose}>
+    <Modal show={add} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('createChannel')}</Modal.Title>
       </Modal.Header>

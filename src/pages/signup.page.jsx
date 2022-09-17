@@ -12,7 +12,7 @@ import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import SignupImage from '../../images/avatar.jpg';
-import TextField from '../components/TextField.jsx';
+import FormTextField from '../components/FormTextField.jsx';
 import useAuth from '../hooks/auth.jsx';
 
 function SignupPage() {
@@ -31,11 +31,11 @@ function SignupPage() {
     history.push('/');
   };
 
-  const handleSubmit = (values) => (e) => {
-    e.preventDefault();
+  const handleSubmit = (values) => {
     axios.post('/api/v1/signup', values)
       .then((response) => {
-        logIn(response);
+        const { token, username } = response.data;
+        logIn({ token, username });
         goHome();
       })
       .catch((error) => {
@@ -60,15 +60,14 @@ function SignupPage() {
                   confirmPassword: '',
                 }}
                 validationSchema={userSchema}
+                onSubmit={handleSubmit}
               >
-                {({
-                  errors, touched, handleChange, handleBlur, values,
-                }) => (
-                  <Form className="w-50" onSubmit={handleSubmit(values)}>
+                {() => (
+                  <Form className="w-50">
                     <h1 className="text-center mb-4">{t('registration')}</h1>
-                    <TextField name="username" errors={errors} placeholder={t('username')} handleChange={handleChange} handleBlur={handleBlur} touched={touched} />
-                    <TextField name="password" errors={errors} placeholder={t('password')} handleChange={handleChange} handleBlur={handleBlur} touched={touched} />
-                    <TextField name="confirmPassword" errors={errors} placeholder={t('confirmPassword')} handleChange={handleChange} handleBlur={handleBlur} touched={touched} />
+                    <FormTextField name="username" type="text" placeholder={t('username')} />
+                    <FormTextField name="password" type="password" placeholder={t('password')} />
+                    <FormTextField name="confirmPassword" type="password" placeholder={t('confirmPassword')} />
                     <Button type="submit" className="w-100 btn btn-outline-primary" variant="null">{t('signup')}</Button>
                   </Form>
                 )}

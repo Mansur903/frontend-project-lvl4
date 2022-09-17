@@ -15,7 +15,7 @@ const messagesSlice = createSlice({
     },
     newMessage: (state, action) => {
       const newState = state;
-      newState.messages.push(action.payload);
+      newState.messages.unshift(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -26,6 +26,8 @@ const messagesSlice = createSlice({
     });
   },
 });
+
+export const getMessagesById = (id) => ({ messages: { messages } }) => messages.filter((item) => item.channel === Number(id));
 
 export const messagesActions = messagesSlice.actions;
 

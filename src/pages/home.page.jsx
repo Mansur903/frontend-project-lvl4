@@ -2,17 +2,17 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { PlusSquare } from 'react-bootstrap-icons';
 
 import AddChannelModal from '../modals/AddChannelModal.jsx';
 import RemoveChannelModal from '../modals/RemoveChannelModal.jsx';
 import RenameChannelModal from '../modals/RenameChannelModal.jsx';
-import { channelsActions } from '../slices/channelsInfo';
-import { messagesActions } from '../slices/messagesInfo';
+import { channelsActions, getActiveChannel, getChannels } from '../slices/channelsInfo';
+import { messagesActions, getMessagesById } from '../slices/messagesInfo';
 import { modalActions } from '../slices/modal';
-import showToast, { selectors } from '../utilities';
+import showToast from '../utilities';
 import Channels from '../components/Channels.jsx';
 import ChatBox from '../components/ChatBox.jsx';
 import routes from '../routes';
@@ -22,8 +22,10 @@ function HomePage() {
   const { t } = useTranslation();
   const { getAuthHeader } = useAuth();
   const [dataReady, setReadyStatus] = React.useState(false);
+  const activeChannel = useSelector(getActiveChannel);
+  const messages = useSelector(getMessagesById(activeChannel));
+  const channels = useSelector(getChannels);
 
-  const { channels, messages, activeChannel } = selectors();
   const dispatch = useDispatch();
 
   const addChannel = () => {

@@ -7,18 +7,29 @@ import filter from 'leo-profanity';
 import { useTranslation } from 'react-i18next';
 import { ArrowRightSquare } from 'react-bootstrap-icons';
 import { Button } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 
 import Messages from './Messages.jsx';
-import { selectors } from '../utilities';
 import useApi from '../hooks/api.jsx';
+import useAuth from '../hooks/auth.jsx';
+import { getActiveChannel } from '../slices/channelsInfo';
+
+const messageSchema = object({
+  textfield: string().required(),
+});
 
 function ChatBox() {
-  const messageSchema = object({
-    textfield: string().required(),
-  });
   const { t } = useTranslation();
-  const { activeChannel } = selectors();
   const api = useApi();
+  const { user } = useAuth();
+  const activeChannel = useSelector(getActiveChannel);
+
+  const handleSubmit = (values, resetForm) => {
+    const filteredValues = { textfield: filter.clean(values.textfield) };
+    const message = { ...filteredValues, channel: Number(activeChannel), username: user };
+    api.newMessage(message);
+    resetForm();
+  };
 
   return (
     <>
@@ -28,12 +39,7 @@ function ChatBox() {
           initialValues={{ textfield: '' }}
           validationSchema={messageSchema}
           validateOnMount
-          onSubmit={(values, { resetForm }) => {
-            const filteredValues = { textfield: filter.clean(values.textfield) };
-            const message = { ...filteredValues, channel: +activeChannel, username: localStorage.username };
-            api.newMessage(message);
-            resetForm();
-          }}
+          onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
         >
           {({ isValid }) => (
             <Form className="d-flex py-1 border rounded-2">

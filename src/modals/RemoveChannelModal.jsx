@@ -2,17 +2,18 @@ import React from 'react';
 import {
   Modal, Button, Form,
 } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { modalActions } from '../slices/modal';
-import showToast, { selectors } from '../utilities';
+import { modalActions, getModalRemove, getDropdownId } from '../slices/modal';
+import showToast from '../utilities';
 import useApi from '../hooks/api.jsx';
 
 function RemoveChannelModal() {
   const api = useApi();
 
-  const { modal, dropdown } = selectors();
+  const remove = useSelector(getModalRemove);
+  const clickedDropdownId = useSelector(getDropdownId);
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -28,7 +29,7 @@ function RemoveChannelModal() {
   };
 
   return (
-    <Modal show={modal.remove} onHide={handleClose}>
+    <Modal show={remove} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('deleteChannel')}</Modal.Title>
       </Modal.Header>
@@ -38,7 +39,7 @@ function RemoveChannelModal() {
 
         <Modal.Footer>
           <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('cancel')}</Button>
-          <Button className="btn btn-danger" type="submit" onClick={handleDeleteChannel(dropdown.clickedDropdownId)}>{t('delete')}</Button>
+          <Button className="btn btn-danger" type="submit" onClick={handleDeleteChannel(clickedDropdownId)}>{t('delete')}</Button>
         </Modal.Footer>
       </Form>
     </Modal>

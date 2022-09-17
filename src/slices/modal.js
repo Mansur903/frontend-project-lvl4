@@ -4,6 +4,7 @@ const initialState = {
   add: false,
   remove: false,
   rename: false,
+  channelId: null,
 };
 
 const modalSlice = createSlice({
@@ -11,25 +12,29 @@ const modalSlice = createSlice({
   initialState,
   reducers: {
     openAddModal: (state) => {
-      const newState = state;
-      newState.add = true;
+      state.add = true;
     },
-    openRemoveModal: (state) => {
-      const newState = state;
-      newState.remove = true;
+    openRemoveModal: (state, action) => {
+      state.remove = true;
+      state.channelId = action.payload;
     },
-    openRenameModal: (state) => {
-      const newState = state;
-      newState.rename = true;
+    openRenameModal: (state, action) => {
+      console.log('action :', action);
+      state.rename = true;
+      state.channelId = action.payload;
     },
     closeModal: (state) => {
-      const newState = state;
-      Object.keys(newState).forEach((item) => {
-        newState[item] = false;
+      Object.keys(state).forEach((item) => {
+        state[item] = false;
       });
     },
   },
 });
+
+export const getModalAdd = ({ modal: { add } }) => add;
+export const getModalRemove = ({ modal: { remove } }) => remove;
+export const getModalRename = ({ modal: { rename } }) => rename;
+export const getDropdownId = ({ modal: { channelId } }) => channelId;
 
 export const modalActions = modalSlice.actions;
 
