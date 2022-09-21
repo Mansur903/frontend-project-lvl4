@@ -1,27 +1,22 @@
-# project-frontend-l4-server
+# Чат (простой аналог Slack)
 
 [![github action status](https://github.com/hexlet-components/projects-frontend-l4-server/workflows/Node%20CI/badge.svg)](../../actions)
 
-## Requirements
+## О проекте
 
-* [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+Данный проект представляет собой real-time приложение на React/Redux, в котором используются такие технологии как AJAX, REST, websockets, React (с хуками) + Redux (@reduxjs/toolkit) + Formik
 
-## Install
+Ссылка на задеплоенный проект в heroku: https://frozen-escarpment-27446.herokuapp.com/
+
+## Установка
 
 ```sh
 $ make install
 ```
 
-## Run
+## Запуск
 
 ```sh
 $ make start
 # http://localhost:5000
 ```
-
-[![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/assets/master/images/hexlet_logo128.png)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=project-frontend-l4-server)
-
-This repository is created and maintained by the team and the community of Hexlet, an educational project. [Read more about Hexlet (in Russian)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=project-frontend-l4-server).
-
-
-Ссылка на проект в heroku: https://frozen-escarpment-27446.herokuapp.com/
