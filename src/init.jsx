@@ -5,16 +5,18 @@ import { Provider } from 'react-redux';
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
 import { initReactI18next } from 'react-i18next';
 
-import App from './App.jsx';
+import App from './pages/App.jsx';
 import { channelsActions } from './slices/channelsInfo.js';
-import { messagesActions } from './slices/messagesInfo.js';
+import { actions } from './slices/messagesInfo.js';
 import ru from './locales/ru';
-import { initStore } from './slices/store';
+import initStore from './slices/store';
 import ApiContext from './contexts/api.jsx';
 import AuthContext from './contexts/auth.jsx';
 
 function AuthProvider({ children }) {
-  const [user, setUser] = React.useState(localStorage.user ? JSON.parse(localStorage.user).username : undefined);
+  const userData = localStorage.user;
+  const parsedUserData = userData !== undefined ? JSON.parse(userData).username : undefined;
+  const [user, setUser] = React.useState(parsedUserData);
 
   const logOut = (param) => {
     localStorage.removeItem('user');
@@ -43,11 +45,27 @@ function AuthProvider({ children }) {
   );
 }
 
+const getSocketCallback = (response, resolve, reject) => {
+  if (response.status === 'ok') {
+    resolve(response);
+  } else {
+    reject(new Error('Ошибка в передаче данных'));
+  }
+};
+
 const getApi = (socket) => ({
-  newMessage: (message) => socket.emit('newMessage', message),
-  newChannel: (channel) => socket.emit('newChannel', channel),
-  removeChannel: (id) => socket.emit('removeChannel', { id }),
-  renameChannel: (data) => socket.emit('renameChannel', data),
+  newMessage: (message) => new Promise((resolve, reject) => {
+    socket.emit('newMessage', message, (response) => getSocketCallback(response, resolve, reject));
+  }),
+  newChannel: (channel) => new Promise((resolve, reject) => {
+    socket.emit('newChannel', channel, (response) => getSocketCallback(response, resolve, reject));
+  }),
+  removeChannel: (id) => new Promise((resolve, reject) => {
+    socket.emit('removeChannel', { id }, (response) => getSocketCallback(response, resolve, reject));
+  }),
+  renameChannel: (data) => new Promise((resolve, reject) => {
+    socket.emit('renameChannel', data, (response) => getSocketCallback(response, resolve, reject));
+  }),
 });
 
 const init = async (socket) => {
@@ -56,7 +74,7 @@ const init = async (socket) => {
 
   injectStyle();
   socket.on('newMessage', (receivedMessage) => {
-    dispatch(messagesActions.newMessage(receivedMessage));
+    dispatch(actions.newMessage(receivedMessage));
   });
   socket.on('newChannel', (receivedChannel) => {
     dispatch(channelsActions.newChannel(receivedChannel));

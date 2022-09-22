@@ -31,8 +31,8 @@ function LoginPage() {
   const { t } = useTranslation();
 
   const userSchema = object({
-    username: string().min(3, t('mustBeThreeOrMore')).required(t('requiredField')),
-    password: string().min(4, t('mustBeFourOrMore')).required(t('requiredField')),
+    username: string().min(3, t('validation.mustBeThreeOrMore')).required(t('validation.requiredField')),
+    password: string().min(4, t('validation.mustBeFourOrMore')).required(t('validation.requiredField')),
   });
 
   const errorClassNames = cn({
@@ -43,14 +43,14 @@ function LoginPage() {
   const showErrorToast = (e) => {
     console.log(e);
     if (e.response.status === StatusCodes.UNAUTHORIZED) {
-      showToast('error', t('authorizeError'));
+      showToast('error', t('toasts.authorizeError'));
       return;
     }
     if (e.response.message === 'Network Error') {
-      showToast('error', t('downloadingError'));
+      showToast('error', t('toasts.downloadingError'));
       return;
     }
-    showToast('error', t('unknownError'));
+    showToast('error', t('toasts.unknownError'));
   };
 
   const handleSubmit = (values) => {
@@ -88,11 +88,11 @@ function LoginPage() {
                   isValid,
                 }) => (
                   <Form className="col-12 col-md-6 mt-3 mt-mb-0">
-                    <h1 className="text-center mb-4">{t('signin')}</h1>
-                    <FormTextField name="username" type="text" placeholder={t('nickname')} />
-                    <FormTextField name="password" type="password" placeholder={t('password')} />
-                    <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit" disabled={!isValid}>{t('signin')}</Button>
-                    <div className={errorClassNames}>{t('wrongLoginPassword')}</div>
+                    <h1 className="text-center mb-4">{t('interfaces.signin')}</h1>
+                    <FormTextField name="username" type="text" placeholder={t('info.nickname')} />
+                    <FormTextField name="password" type="password" placeholder={t('inputs.password')} />
+                    <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit" disabled={!isValid}>{t('interfaces.signin')}</Button>
+                    <div className={errorClassNames}>{t('validation.wrongLoginPassword')}</div>
                   </Form>
                 )}
               </Formik>
@@ -100,10 +100,10 @@ function LoginPage() {
             <div className="card-footer p-4">
               <div className="text-center">
                 <span>
-                  {t('noAccount')}
+                  {t('info.noAccount')}
                   {' '}
                 </span>
-                <a href={routes.signupPath}>{t('registration')}</a>
+                <a href={routes.signupPath}>{t('interfaces.registration')}</a>
               </div>
             </div>
           </div>

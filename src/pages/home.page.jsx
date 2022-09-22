@@ -10,7 +10,7 @@ import AddChannelModal from '../modals/AddChannelModal.jsx';
 import RemoveChannelModal from '../modals/RemoveChannelModal.jsx';
 import RenameChannelModal from '../modals/RenameChannelModal.jsx';
 import { channelsActions, getActiveChannel, getChannels } from '../slices/channelsInfo';
-import { messagesActions, getMessagesById } from '../slices/messagesInfo';
+import { getMessagesById } from '../slices/messagesInfo';
 import { modalActions } from '../slices/modal';
 import showToast from '../utilities';
 import Channels from '../components/Channels.jsx';
@@ -27,18 +27,17 @@ function HomePage() {
   const channels = useSelector(getChannels);
 
   const dispatch = useDispatch();
-
   const addChannel = () => {
-    dispatch(modalActions.openAddModal());
+    dispatch(modalActions.openModal({ type: 'add', id: null }));
   };
 
   const showErrorToast = (e) => {
     console.log(e);
     if (e.response.message === 'Network Error') {
-      showToast('error', t('downloadingError'));
+      showToast('error', t('toasts.downloadingError'));
       return;
     }
-    showToast('error', t('unknownError'));
+    showToast('error', t('toasts.unknownError'));
   };
 
   const getData = () => {
@@ -49,8 +48,8 @@ function HomePage() {
       },
     )
       .then((response) => {
-        dispatch(channelsActions.initChannels(response.data.channels));
-        dispatch(messagesActions.initMessages(response.data.messages));
+        const { data } = response;
+        dispatch(channelsActions.initChannels(data));
       })
       .then(() => setReadyStatus(true))
       .catch((e) => {
@@ -73,7 +72,7 @@ function HomePage() {
         <div className="row h-100 bg-white flex-md-row">
           <div className="col-4 col-md-2 border-end pt-5 px-0 bg-light">
             <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
-              <span>{t('channels')}</span>
+              <span>{t('channels.header')}</span>
               <button onClick={addChannel} type="button" className="p-0 text-primary btn btn-group-vertical">
                 <PlusSquare width="20" height="20" />
                 <span className="visually-hidden">+</span>

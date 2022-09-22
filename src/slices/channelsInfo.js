@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import _ from 'lodash';
 
 const initialState = {
   channels: [],
@@ -10,7 +11,7 @@ const channelsSlice = createSlice({
   initialState,
   reducers: {
     initChannels: (state, action) => {
-      state.channels = [...action.payload];
+      state.channels = action.payload.channels;
     },
     chooseChannel: (state, action) => {
       state.activeChannel = action.payload;
@@ -24,13 +25,14 @@ const channelsSlice = createSlice({
     },
     removeChannel: (state, action) => {
       const channelId = action.payload;
-      state.channels = state.channels.filter((c) => c.id !== channelId);
-      state.activeChannel = 1;
+      _.remove(state.channels, (channel) => channel.id === channelId);
+      if (state.activeChannel === channelId) {
+        state.activeChannel = 1;
+      }
     },
     renameChannel: (state, action) => {
-      const channelId = Number(action.payload.id);
+      const channelId = action.payload.id;
       const channel = state.channels.find((c) => c.id === channelId);
-      if (!channel) return;
       channel.name = action.payload.name;
     },
   },

@@ -6,14 +6,14 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import routes from './routes.js';
+import routes from '../routes.js';
 
-import Login from './pages/login.page.jsx';
-import Home from './pages/home.page.jsx';
-import Signup from './pages/signup.page.jsx';
-import PageNotFound from './pages/404.page.jsx';
-import Header from './Header.jsx';
-import useAuth from './hooks/auth.jsx';
+import Login from './login.page.jsx';
+import Home from './home.page.jsx';
+import Signup from './signup.page.jsx';
+import PageNotFound from './404.page.jsx';
+import Header from '../components/Header.jsx';
+import useAuth from '../hooks/auth.jsx';
 
 function PrivateRoute({ component: Component, path }) {
   const { user } = useAuth();

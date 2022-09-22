@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import filter from 'leo-profanity';
 import { object, string } from 'yup';
 
-import { modalActions, getModalAdd } from '../slices/modal';
+import { modalActions, getModalStatus, getModalType } from '../slices/modal';
 import showToast from '../utilities';
 import useApi from '../hooks/api.jsx';
 import { getChannels } from '../slices/channelsInfo.js';
@@ -22,10 +22,11 @@ function AddChannelModal() {
   const { t } = useTranslation();
 
   const channels = useSelector(getChannels);
-  const add = useSelector(getModalAdd);
+  const isOpened = useSelector(getModalStatus);
+  const modalType = useSelector(getModalType);
 
   const formSchema = object({
-    channelName: string().required(t('requiredField')),
+    channelName: string().required(t('validation.requiredField')),
   });
 
   useEffect(() => {
@@ -36,22 +37,22 @@ function AddChannelModal() {
     dispatch(modalActions.closeModal());
   };
 
-  const handleAddChannel = (values) => {
+  const handleAddChannel = async (values) => {
     const newChannel = { name: filter.clean(values.channelName) };
     const addedChannels = channels.map((channel) => channel.name);
     if (!addedChannels.includes(values.channelName)) {
-      api.newChannel(newChannel);
-      showToast('success', t('channelCreated'));
+      await api.newChannel(newChannel);
+      showToast('success', t('toasts.channelCreated'));
     } else {
-      showToast('error', t('channelExists'));
+      showToast('error', t('toasts.channelExists'));
     }
     handleClose();
   };
 
   return (
-    <Modal show={add} onHide={handleClose}>
+    <Modal show={modalType === 'add' && isOpened} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{t('createChannel')}</Modal.Title>
+        <Modal.Title>{t('channels.createChannel')}</Modal.Title>
       </Modal.Header>
       <Formik
         initialValues={{ channelName: '' }}
@@ -72,8 +73,8 @@ function AddChannelModal() {
             </Modal.Body>
 
             <Modal.Footer>
-              <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('cancel')}</Button>
-              <Button className="btn btn-primary" type="submit">{t('create')}</Button>
+              <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('interfaces.cancel')}</Button>
+              <Button className="btn btn-primary" type="submit">{t('interfaces.create')}</Button>
             </Modal.Footer>
           </Form>
         )}

@@ -10,7 +10,9 @@ import { useTranslation } from 'react-i18next';
 import filter from 'leo-profanity';
 import { object, string } from 'yup';
 
-import { modalActions, getModalRename, getDropdownId } from '../slices/modal';
+import {
+  modalActions, getModalStatus, getModalType, getDropdownId,
+} from '../slices/modal';
 import { getChannels } from '../slices/channelsInfo';
 import showToast from '../utilities';
 import useApi from '../hooks/api.jsx';
@@ -21,12 +23,13 @@ function RenameChannelModal() {
   const inputRef = useRef(null);
   const { t } = useTranslation();
 
-  const rename = useSelector(getModalRename);
+  const isOpened = useSelector(getModalStatus);
+  const modalType = useSelector(getModalType);
   const channels = useSelector(getChannels);
   const clickedDropdownId = useSelector(getDropdownId);
 
   const formSchema = object({
-    channelName: string().required(t('requiredField')),
+    channelName: string().required(t('validation.requiredField')),
   });
 
   useEffect(() => {
@@ -37,22 +40,22 @@ function RenameChannelModal() {
     dispatch(modalActions.closeModal());
   };
 
-  const handleRenameChannel = (id, values) => {
+  const handleRenameChannel = async (id, values) => {
     const name = filter.clean(values.channelName);
     const addedChannels = channels.map((channel) => channel.name);
     if (!addedChannels.includes(values.channelName)) {
-      api.renameChannel({ id, name });
-      showToast('success', t('channelRenamed'));
+      await api.renameChannel({ id, name });
+      showToast('success', t('toasts.channelRenamed'));
     } else {
-      showToast('error', t('channelExists'));
+      showToast('error', t('toasts.channelExists'));
     }
     handleClose();
   };
 
   return (
-    <Modal show={rename} onHide={handleClose}>
+    <Modal show={modalType === 'rename' && isOpened} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{t('renameChannel')}</Modal.Title>
+        <Modal.Title>{t('channels.renameChannel')}</Modal.Title>
       </Modal.Header>
       <Formik
         initialValues={{ channelName: '' }}
@@ -73,8 +76,8 @@ function RenameChannelModal() {
             </Modal.Body>
 
             <Modal.Footer>
-              <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('cancel')}</Button>
-              <Button className="btn btn-primary" type="submit">{t('rename')}</Button>
+              <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('interfaces.cancel')}</Button>
+              <Button className="btn btn-primary" type="submit">{t('channels.rename')}</Button>
             </Modal.Footer>
           </Form>
         )}

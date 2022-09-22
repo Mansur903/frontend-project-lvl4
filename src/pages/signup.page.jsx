@@ -22,9 +22,9 @@ function SignupPage() {
   const { logIn } = useAuth();
 
   const userSchema = object({
-    username: string().min(3, t('from3To20')).max(20, t('from3To20')).required(t('requiredField')),
-    password: string().min(6, t('sixOrMore')).required(t('requiredField')),
-    confirmPassword: string().oneOf([Yup.ref('password'), null], t('passwordsMustMatch')),
+    username: string().min(3, t('validation.from3To20')).max(20, t('validation.from3To20')).required(t('validation.requiredField')),
+    password: string().min(6, t('validation.sixOrMore')).required(t('validation.requiredField')),
+    confirmPassword: string().oneOf([Yup.ref('password'), null], t('validation.passwordsMustMatch')),
   });
 
   const goHome = () => {
@@ -51,7 +51,7 @@ function SignupPage() {
           <div className="card shadow-sm">
             <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
               <div>
-                <img src={SignupImage} alt={t('registration')} className="rounded-circle" />
+                <img src={SignupImage} alt={t('interfaces.registration')} className="rounded-circle" />
               </div>
               <Formik
                 initialValues={{
@@ -64,17 +64,17 @@ function SignupPage() {
               >
                 {() => (
                   <Form className="w-50">
-                    <h1 className="text-center mb-4">{t('registration')}</h1>
-                    <FormTextField name="username" type="text" placeholder={t('username')} />
-                    <FormTextField name="password" type="password" placeholder={t('password')} />
-                    <FormTextField name="confirmPassword" type="password" placeholder={t('confirmPassword')} />
-                    <Button type="submit" className="w-100 btn btn-outline-primary" variant="null">{t('signup')}</Button>
+                    <h1 className="text-center mb-4">{t('interfaces.registration')}</h1>
+                    <FormTextField name="username" type="text" placeholder={t('inputs.username')} />
+                    <FormTextField name="password" type="password" placeholder={t('inputs.password')} />
+                    <FormTextField name="confirmPassword" type="password" placeholder={t('inputs.confirmPassword')} />
+                    <Button type="submit" className="w-100 btn btn-outline-primary" variant="null">{t('interfaces.signup')}</Button>
                   </Form>
                 )}
               </Formik>
             </div>
           </div>
-          <div className="error-field row justify-content-center align-content-center m-10">{registered === null ? null : t('userExists')}</div>
+          <div className="error-field row justify-content-center align-content-center m-10">{registered === null ? null : t('validation.userExists')}</div>
         </div>
       </div>
     </div>

@@ -9,10 +9,8 @@ const rootReducer = combineReducers({
   modal: modalReducer,
 });
 
-export const initStore = () => configureStore({
+const initStore = () => configureStore({
   reducer: rootReducer,
 });
 
-export default configureStore({
-  reducer: rootReducer,
-});
+export default initStore;

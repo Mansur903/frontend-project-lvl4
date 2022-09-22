@@ -8,12 +8,12 @@ function PageNotFound() {
 
   return (
     <div className="text-center">
-      <img alt={t('pageNotFound')} className="img-fluid h-25" src={PageNotFoundImage} />
-      <h1 className="h4 text-muted">{t('pageNotFound')}</h1>
+      <img alt={t('info.pageNotFound')} className="img-fluid h-25" src={PageNotFoundImage} />
+      <h1 className="h4 text-muted">{t('info.pageNotFound')}</h1>
       <p className="text-muted">
-        {t('butYouCan')}
+        {t('info.butYouCan')}
         {' '}
-        <a href="/">{t('toMainPage')}</a>
+        <a href="/">{t('info.toMainPage')}</a>
       </p>
     </div>
   );

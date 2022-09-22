@@ -28,15 +28,13 @@ function Messages() {
     });
   }, [messages]);
 
-  const RenderMessages = React.useCallback(() => messagesList.map((item) => (
-    <div className="text-break mb-2" key={item.id}>
-      <Message user={item.username} message={item.textfield} />
-    </div>
-  )), [messages]);
-
   return (
     <div className="chat-messages overflow-auto px-5 " id="messages-box">
-      <RenderMessages />
+      {messagesList.map((item) => (
+        <div className="text-break mb-2" key={item.id}>
+          <Message user={item.username} message={item.body} />
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  add: false,
-  remove: false,
-  rename: false,
+  isOpened: false,
+  type: null,
   channelId: null,
 };
 
@@ -11,29 +10,23 @@ const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    openAddModal: (state) => {
-      state.add = true;
-    },
-    openRemoveModal: (state, action) => {
-      state.remove = true;
-      state.channelId = action.payload;
-    },
-    openRenameModal: (state, action) => {
-      console.log('action :', action);
-      state.rename = true;
-      state.channelId = action.payload;
+
+    openModal: (state, action) => {
+      state.isOpened = true;
+      state.type = action.payload.type;
+      state.channelId = action.payload.id;
     },
     closeModal: (state) => {
-      Object.keys(state).forEach((item) => {
-        state[item] = false;
-      });
+      state.isOpened = false;
+      state.type = null;
+      state.channelId = null;
     },
+
   },
 });
 
-export const getModalAdd = ({ modal: { add } }) => add;
-export const getModalRemove = ({ modal: { remove } }) => remove;
-export const getModalRename = ({ modal: { rename } }) => rename;
+export const getModalStatus = ({ modal: { isOpened } }) => isOpened;
+export const getModalType = ({ modal: { type } }) => type;
 export const getDropdownId = ({ modal: { channelId } }) => channelId;
 
 export const modalActions = modalSlice.actions;
