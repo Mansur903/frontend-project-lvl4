@@ -19,10 +19,9 @@ import useAuth from '../hooks/auth.jsx';
 import showToast from '../utilities.js';
 
 function LoginPage() {
+  const [authError, setAuthError] = React.useState(false);
   const history = useHistory();
-  const {
-    logIn, logOut, user,
-  } = useAuth();
+  const { logIn } = useAuth();
 
   const goHome = () => {
     history.push(routes.homePath);
@@ -36,8 +35,8 @@ function LoginPage() {
   });
 
   const errorClassNames = cn({
-    'error-field': user === null,
-    'no-error-field': user === undefined,
+    'error-field': authError === true,
+    'no-error-field': authError === false,
   });
 
   const showErrorToast = (e) => {
@@ -61,7 +60,7 @@ function LoginPage() {
         goHome();
       })
       .catch((error) => {
-        logOut(null);
+        setAuthError(true);
         showErrorToast(error);
       });
   };

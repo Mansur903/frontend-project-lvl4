@@ -17,6 +17,7 @@ import useAuth from '../hooks/auth.jsx';
 
 function PrivateRoute({ component: Component, path }) {
   const { user } = useAuth();
+  console.log('userr :', user);
 
   return (
     <Route

@@ -63,7 +63,7 @@ function SignupPage() {
                 onSubmit={handleSubmit}
               >
                 {() => (
-                  <Form className="w-50">
+                  <Form className="col-12 col-md-6 mt-3 mt-mb-0">
                     <h1 className="text-center mb-4">{t('interfaces.registration')}</h1>
                     <FormTextField name="username" type="text" placeholder={t('inputs.username')} />
                     <FormTextField name="password" type="password" placeholder={t('inputs.password')} />

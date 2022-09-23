@@ -22,6 +22,7 @@ function ChatBox() {
   const { t } = useTranslation();
   const api = useApi();
   const { user } = useAuth();
+  console.log('user :', user);
   const activeChannel = useSelector(getActiveChannel);
 
   const handleSubmit = async (values, props) => {
@@ -34,7 +35,7 @@ function ChatBox() {
   return (
     <>
       <Messages />
-      <div className="mt-auto px-5 py-3">
+      <div className="mt-auto px-1 py-3">
         <Formik
           initialValues={{ message: '' }}
           validationSchema={messageSchema}

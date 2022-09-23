@@ -12,7 +12,7 @@ const messagesSlice = createSlice({
   initialState,
   reducers: {
     newMessage: (state, action) => {
-      state.messages.unshift(action.payload);
+      state.messages.push(action.payload);
     },
   },
   extraReducers: (builder) => {
