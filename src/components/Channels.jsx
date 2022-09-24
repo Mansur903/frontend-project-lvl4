@@ -11,9 +11,15 @@ import { modalActions } from '../slices/modal';
 
 function Channel(props) {
   const {
-    channel, channelClass, isActive, selectChannel, openRemoveModal, openRenameModal,
+    channel, isActive, selectChannel, openRemoveModal, openRenameModal,
   } = props;
+  const activeChannel = useSelector(getActiveChannel);
   const { t } = useTranslation();
+
+  const channelClass = cn('w-100', 'rounded-0', 'text-start', {
+    btn: activeChannel !== channel.id,
+    'btn-secondary': activeChannel === channel.id,
+  });
 
   return (
     <li
@@ -71,15 +77,10 @@ function Channels() {
   return (
     <ul className="nav flex-column nav-pills nav-fill px-2">
       {channels.map((item) => {
-        const channelClass = cn('w-100', 'rounded-0', 'text-start', {
-          btn: activeChannel !== item.id,
-          'btn-secondary': activeChannel === item.id,
-        });
         const isActive = activeChannel === item.id;
         return (
           <Channel
             channel={item}
-            channelClass={channelClass}
             isActive={isActive}
             key={item.id}
             selectChannel={selectChannel}

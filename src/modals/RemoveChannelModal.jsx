@@ -26,7 +26,11 @@ function RemoveChannelModal() {
 
   const handleDeleteChannel = (id) => async (e) => {
     e.preventDefault();
-    await api.removeChannel(id);
+    try {
+      await api.removeChannel(id);
+    } catch {
+      t('info.removeChannelError');
+    }
     handleClose();
     showToast('success', t('toasts.channelDeleted'));
   };

@@ -22,9 +22,9 @@ function SignupPage() {
   const { logIn } = useAuth();
 
   const userSchema = object({
-    username: string().min(3, t('validation.from3To20')).max(20, t('validation.from3To20')).required(t('validation.requiredField')),
-    password: string().min(6, t('validation.sixOrMore')).required(t('validation.requiredField')),
-    confirmPassword: string().oneOf([Yup.ref('password'), null], t('validation.passwordsMustMatch')),
+    username: string().min(3).max(20).required(),
+    password: string().min(6).required(),
+    confirmPassword: string().oneOf([Yup.ref('password'), null]),
   });
 
   const goHome = () => {
@@ -38,9 +38,8 @@ function SignupPage() {
         logIn({ token, username });
         goHome();
       })
-      .catch((error) => {
+      .catch(() => {
         setStatus(false);
-        console.log(error);
       });
   };
 
@@ -62,13 +61,13 @@ function SignupPage() {
                 validationSchema={userSchema}
                 onSubmit={handleSubmit}
               >
-                {() => (
+                {({ isValid, isSubmitting }) => (
                   <Form className="col-12 col-md-6 mt-3 mt-mb-0">
                     <h1 className="text-center mb-4">{t('interfaces.registration')}</h1>
                     <FormTextField name="username" type="text" placeholder={t('inputs.username')} />
                     <FormTextField name="password" type="password" placeholder={t('inputs.password')} />
                     <FormTextField name="confirmPassword" type="password" placeholder={t('inputs.confirmPassword')} />
-                    <Button type="submit" className="w-100 btn btn-outline-primary" variant="null">{t('interfaces.signup')}</Button>
+                    <Button type="submit" className="w-100 btn btn-outline-primary" variant="null" disabled={!isValid && !isSubmitting}>{t('interfaces.signup')}</Button>
                   </Form>
                 )}
               </Formik>

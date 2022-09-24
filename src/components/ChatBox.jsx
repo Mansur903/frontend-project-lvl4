@@ -22,13 +22,16 @@ function ChatBox() {
   const { t } = useTranslation();
   const api = useApi();
   const { user } = useAuth();
-  console.log('user :', user);
   const activeChannel = useSelector(getActiveChannel);
 
   const handleSubmit = async (values, props) => {
     const { resetForm } = props;
     const message = { body: filter.clean(values.message), channel: activeChannel, username: user };
-    await api.newMessage(message);
+    try {
+      await api.newMessage(message);
+    } catch (e) {
+      t('info.newMessageError');
+    }
     resetForm();
   };
 
@@ -41,7 +44,7 @@ function ChatBox() {
           validationSchema={messageSchema}
           validateOnMount
           validateOnBlur={false}
-          onSubmit={(values, props) => handleSubmit(values, props)}
+          onSubmit={handleSubmit}
         >
           {({ isValid }) => (
             <Form className="d-flex py-1 border rounded-2">

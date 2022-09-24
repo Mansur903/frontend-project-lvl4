@@ -19,7 +19,6 @@ function Message({ user, message }) {
 function Messages() {
   const activeChannel = useSelector(getActiveChannel);
   const messagesList = useSelector(getMessagesById(activeChannel));
-  console.log('messagesList :', messagesList);
   const messages = useSelector(getMessagesById(activeChannel));
 
   React.useEffect(() => {

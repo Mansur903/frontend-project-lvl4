@@ -4,14 +4,16 @@ import { injectStyle } from 'react-toastify/dist/inject-style';
 import { Provider } from 'react-redux';
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
 import { initReactI18next } from 'react-i18next';
+import * as yup from 'yup';
 
 import App from './pages/App.jsx';
-import { channelsActions } from './slices/channelsInfo.js';
-import { actions } from './slices/messagesInfo.js';
+import { channelsActions } from './slices/channelsInfo';
+import { actions } from './slices/messagesInfo';
 import ru from './locales/ru';
 import initStore from './slices/store';
 import ApiContext from './contexts/api.jsx';
 import AuthContext from './contexts/auth.jsx';
+import yupLocale from './locales/yupLocale';
 
 function AuthProvider({ children }) {
   const userData = localStorage.user;
@@ -49,23 +51,21 @@ const getSocketCallback = (response, resolve, reject) => {
   if (response.status === 'ok') {
     resolve(response);
   } else {
-    reject(new Error('Ошибка в передаче данных'));
+    setTimeout(() => {
+      reject();
+    }, 3000);
   }
 };
 
+const sendSocketAsync = (actionName, item, socket) => new Promise((resolve, reject) => {
+  socket.emit(actionName, item, (response) => getSocketCallback(response, resolve, reject));
+});
+
 const getApi = (socket) => ({
-  newMessage: (message) => new Promise((resolve, reject) => {
-    socket.emit('newMessage', message, (response) => getSocketCallback(response, resolve, reject));
-  }),
-  newChannel: (channel) => new Promise((resolve, reject) => {
-    socket.emit('newChannel', channel, (response) => getSocketCallback(response, resolve, reject));
-  }),
-  removeChannel: (id) => new Promise((resolve, reject) => {
-    socket.emit('removeChannel', { id }, (response) => getSocketCallback(response, resolve, reject));
-  }),
-  renameChannel: (data) => new Promise((resolve, reject) => {
-    socket.emit('renameChannel', data, (response) => getSocketCallback(response, resolve, reject));
-  }),
+  newMessage: (message) => sendSocketAsync('newMessage', message, socket),
+  newChannel: (channel) => sendSocketAsync('newChannel', channel, socket),
+  removeChannel: (id) => sendSocketAsync('removeChannel', { id }, socket),
+  renameChannel: (data) => sendSocketAsync('renameChannel', data, socket),
 });
 
 const init = async (socket) => {
@@ -104,6 +104,8 @@ const init = async (socket) => {
         escapeValue: false,
       },
     });
+
+  await yup.setLocale(yupLocale);
 
   return (
     <RollbarProvider config={rollbarConfig}>

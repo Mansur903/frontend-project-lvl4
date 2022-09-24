@@ -36,12 +36,6 @@ export default {
     validation: {
       wrongLoginPassword: 'Неверные имя пользователя или пароль',
       userExists: 'Пользователь с таким именем уже зарегистрирован',
-      mustBeThreeOrMore: 'Должно быть 3 или более символов',
-      mustBeFourOrMore: 'Должно быть 4 или более символов',
-      requiredField: 'Это обязательное поле',
-      from3To20: 'От 3 до 20 символов',
-      sixOrMore: 'Не менее 6 символов',
-      passwordsMustMatch: 'Пароли должны совпадать',
     },
     inputs: {
       username: 'Имя пользователя',
@@ -56,6 +50,10 @@ export default {
       newMessage: 'Новое сообщение',
       nickname: 'Ваш ник',
       noAccount: 'Нет аккаунта?',
+      newMessageError: 'Ошибка при отправке сообщения',
+      newChannelError: 'Ошибка при создании канала',
+      removeChannelError: 'Ошибка при удалении канала',
+      renameChannelError: 'Ошибка при переименовании канала',
     },
     messagesCounter_one: '{{count}} сообщение',
     messagesCounter_few: '{{count}} сообщения',

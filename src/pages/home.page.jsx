@@ -32,7 +32,6 @@ function HomePage() {
   };
 
   const showErrorToast = (e) => {
-    console.log(e);
     if (e.response.message === 'Network Error') {
       showToast('error', t('toasts.downloadingError'));
       return;
@@ -50,8 +49,8 @@ function HomePage() {
       .then((response) => {
         const { data } = response;
         dispatch(channelsActions.initChannels(data));
+        setReadyStatus(true);
       })
-      .then(() => setReadyStatus(true))
       .catch((e) => {
         showErrorToast(e);
       });

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import {
-  Formik, Field, Form,
+  Formik, Form,
 } from 'formik';
 import {
   Modal, FormGroup, Button,
@@ -16,6 +16,7 @@ import {
 import { getChannels } from '../slices/channelsInfo';
 import showToast from '../utilities';
 import useApi from '../hooks/api.jsx';
+import FormTextField from '../components/FormTextField.jsx';
 
 function RenameChannelModal() {
   const api = useApi();
@@ -29,12 +30,12 @@ function RenameChannelModal() {
   const clickedDropdownId = useSelector(getDropdownId);
 
   const formSchema = object({
-    channelName: string().required(t('validation.requiredField')),
+    channelName: string().required(),
   });
 
   useEffect(() => {
     if (inputRef.current !== null) inputRef.current.focus();
-  });
+  }, [isOpened]);
 
   const handleClose = () => {
     dispatch(modalActions.closeModal());
@@ -44,7 +45,11 @@ function RenameChannelModal() {
     const name = filter.clean(values.channelName);
     const addedChannels = channels.map((channel) => channel.name);
     if (!addedChannels.includes(values.channelName)) {
-      await api.renameChannel({ id, name });
+      try {
+        await api.renameChannel({ id, name });
+      } catch {
+        t('info.renameChannelError');
+      }
       showToast('success', t('toasts.channelRenamed'));
     } else {
       showToast('error', t('toasts.channelExists'));
@@ -60,24 +65,24 @@ function RenameChannelModal() {
       <Formik
         initialValues={{ channelName: '' }}
         validationSchema={formSchema}
+        validateOnMount
         onSubmit={(values) => {
           handleRenameChannel(clickedDropdownId, values);
         }}
       >
-        {(formProps) => (
+        {({
+          isValid,
+        }) => (
           <Form>
             <Modal.Body>
               <FormGroup className="form-group">
-                <Field className="mb-2 form-control" data-testid="input-body" id="channelName" name="channelName" type="text" />
-                {formProps.errors.channelName ? (
-                  <div className="error-field">{formProps.errors.channelName}</div>
-                ) : null}
+                <FormTextField className="mb-2 form-control" name="channelName" type="text" inputEl={inputRef} />
               </FormGroup>
             </Modal.Body>
 
             <Modal.Footer>
               <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('interfaces.cancel')}</Button>
-              <Button className="btn btn-primary" type="submit">{t('channels.rename')}</Button>
+              <Button className="btn btn-primary" type="submit" disabled={!isValid}>{t('channels.rename')}</Button>
             </Modal.Footer>
           </Form>
         )}

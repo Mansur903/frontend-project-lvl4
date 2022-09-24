@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 
+const defaultChannelNumber = 1;
+
 const initialState = {
   channels: [],
-  activeChannel: 1,
+  activeChannel: defaultChannelNumber,
 };
 
 const channelsSlice = createSlice({

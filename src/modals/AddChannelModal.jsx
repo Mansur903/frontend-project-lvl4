@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import {
-  Formik, Field, Form,
+  Formik, Form,
 } from 'formik';
 import {
   Modal, FormGroup, Button,
@@ -14,6 +14,7 @@ import { modalActions, getModalStatus, getModalType } from '../slices/modal';
 import showToast from '../utilities';
 import useApi from '../hooks/api.jsx';
 import { getChannels } from '../slices/channelsInfo.js';
+import FormTextField from '../components/FormTextField.jsx';
 
 function AddChannelModal() {
   const api = useApi();
@@ -26,12 +27,12 @@ function AddChannelModal() {
   const modalType = useSelector(getModalType);
 
   const formSchema = object({
-    channelName: string().required(t('validation.requiredField')),
+    channelName: string().required(),
   });
 
   useEffect(() => {
     if (inputRef.current !== null) inputRef.current.focus();
-  });
+  }, [isOpened]);
 
   const handleClose = () => {
     dispatch(modalActions.closeModal());
@@ -41,7 +42,11 @@ function AddChannelModal() {
     const newChannel = { name: filter.clean(values.channelName) };
     const addedChannels = channels.map((channel) => channel.name);
     if (!addedChannels.includes(values.channelName)) {
-      await api.newChannel(newChannel);
+      try {
+        await api.newChannel(newChannel);
+      } catch {
+        t('info.newChannelError');
+      }
       showToast('success', t('toasts.channelCreated'));
     } else {
       showToast('error', t('toasts.channelExists'));
@@ -57,24 +62,22 @@ function AddChannelModal() {
       <Formik
         initialValues={{ channelName: '' }}
         validationSchema={formSchema}
-        onSubmit={(values) => {
-          handleAddChannel(values);
-        }}
+        validateOnMount
+        onSubmit={handleAddChannel}
       >
-        {(formProps) => (
+        {({
+          isValid,
+        }) => (
           <Form>
             <Modal.Body>
               <FormGroup className="form-group">
-                <Field className="mb-2 form-control" data-testid="input-body" id="channelName" name="channelName" type="text" />
-                {formProps.errors.channelName ? (
-                  <div className="error-field">{formProps.errors.channelName}</div>
-                ) : null}
+                <FormTextField className="mb-2 form-control" name="channelName" type="text" inputEl={inputRef} />
               </FormGroup>
             </Modal.Body>
 
             <Modal.Footer>
               <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('interfaces.cancel')}</Button>
-              <Button className="btn btn-primary" type="submit">{t('interfaces.create')}</Button>
+              <Button className="btn btn-primary" disabled={!isValid} type="submit">{t('interfaces.create')}</Button>
             </Modal.Footer>
           </Form>
         )}

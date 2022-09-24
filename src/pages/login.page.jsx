@@ -30,8 +30,8 @@ function LoginPage() {
   const { t } = useTranslation();
 
   const userSchema = object({
-    username: string().min(3, t('validation.mustBeThreeOrMore')).required(t('validation.requiredField')),
-    password: string().min(4, t('validation.mustBeFourOrMore')).required(t('validation.requiredField')),
+    username: string().required(),
+    password: string().required(),
   });
 
   const errorClassNames = cn({
@@ -40,7 +40,6 @@ function LoginPage() {
   });
 
   const showErrorToast = (e) => {
-    console.log(e);
     if (e.response.status === StatusCodes.UNAUTHORIZED) {
       showToast('error', t('toasts.authorizeError'));
       return;
@@ -84,13 +83,13 @@ function LoginPage() {
                 onSubmit={handleSubmit}
               >
                 {({
-                  isValid,
+                  isValid, isSubmitting,
                 }) => (
                   <Form className="col-12 col-md-6 mt-3 mt-mb-0">
                     <h1 className="text-center mb-4">{t('interfaces.signin')}</h1>
                     <FormTextField name="username" type="text" placeholder={t('info.nickname')} />
                     <FormTextField name="password" type="password" placeholder={t('inputs.password')} />
-                    <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit" disabled={!isValid}>{t('interfaces.signin')}</Button>
+                    <Button className="w-100 mb-3 btn btn-outline-primary" variant="null" type="submit" disabled={!isValid && !isSubmitting}>{t('interfaces.signin')}</Button>
                     <div className={errorClassNames}>{t('validation.wrongLoginPassword')}</div>
                   </Form>
                 )}
