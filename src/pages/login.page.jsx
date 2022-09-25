@@ -41,7 +41,6 @@ function LoginPage() {
 
   const showErrorToast = (e) => {
     if (e.response.status === StatusCodes.UNAUTHORIZED) {
-      showToast('error', t('toasts.authorizeError'));
       return;
     }
     if (e.response.message === 'Network Error') {

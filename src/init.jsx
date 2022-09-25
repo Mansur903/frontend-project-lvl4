@@ -47,19 +47,20 @@ function AuthProvider({ children }) {
   );
 }
 
-const getSocketCallback = (response, resolve, reject) => {
-  if (response.status === 'ok') {
-    resolve(response);
-  } else {
-    setTimeout(() => {
-      reject();
-    }, 3000);
-  }
-};
-
-const sendSocketAsync = (actionName, item, socket) => new Promise((resolve, reject) => {
-  socket.emit(actionName, item, (response) => getSocketCallback(response, resolve, reject));
-});
+const sendSocketAsync = (actionName, item, socket) => (
+  new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(reject(), 3000);
+    socket.emit(actionName, item, (response) => {
+      if (response.status === 'pending') return;
+      clearTimeout(timeoutId);
+      if (response.status === 'ok') {
+        resolve(response);
+      } else {
+        reject();
+      }
+    });
+  })
+);
 
 const getApi = (socket) => ({
   newMessage: (message) => sendSocketAsync('newMessage', message, socket),
