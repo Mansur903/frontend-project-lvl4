@@ -2,7 +2,6 @@ import React from 'react';
 import i18n from 'i18next';
 import { injectStyle } from 'react-toastify/dist/inject-style';
 import { Provider } from 'react-redux';
-import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
 import { initReactI18next } from 'react-i18next';
 import * as yup from 'yup';
 
@@ -88,11 +87,11 @@ const init = async (socket) => {
     dispatch(channelsActions.renameChannel(channel));
   });
 
-  const rollbarConfig = {
+  /* const rollbarConfig = {
     accessToken: process.env.REACT_APP_ROLLBAR,
     captureUncaught: true,
     captureUnhandledRejections: true,
-  };
+  }; */
 
   await i18n
     .use(initReactI18next)
@@ -109,17 +108,13 @@ const init = async (socket) => {
   await yup.setLocale(yupLocale);
 
   return (
-    <RollbarProvider config={rollbarConfig}>
-      <ErrorBoundary>
-        <AuthProvider>
-          <ApiContext.Provider value={getApi(socket)}>
-            <Provider store={store}>
-              <App />
-            </Provider>
-          </ApiContext.Provider>
-        </AuthProvider>
-      </ErrorBoundary>
-    </RollbarProvider>
+    <AuthProvider>
+      <ApiContext.Provider value={getApi(socket)}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </ApiContext.Provider>
+    </AuthProvider>
   );
 };
 

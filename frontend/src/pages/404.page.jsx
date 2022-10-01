@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import PageNotFoundImage from '../../images/404.svg';
+import PageNotFoundImage from '../images/404.svg';
 
 function PageNotFound() {
   const { t } = useTranslation();

@@ -12,7 +12,7 @@ import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { StatusCodes } from 'http-status-codes';
 
-import LoginImage from '../../images/hexlet-image.jpg';
+import LoginImage from '../images/hexlet-image.jpg';
 import routes from '../routes';
 import FormTextField from '../components/FormTextField.jsx';
 import useAuth from '../hooks/auth.jsx';

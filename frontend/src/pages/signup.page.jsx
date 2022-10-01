@@ -11,7 +11,7 @@ import { object, string } from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import SignupImage from '../../images/avatar.jpg';
+import SignupImage from '../images/avatar.jpg';
 import FormTextField from '../components/FormTextField.jsx';
 import useAuth from '../hooks/auth.jsx';
 
