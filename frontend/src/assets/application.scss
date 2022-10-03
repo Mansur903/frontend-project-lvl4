@@ -8,6 +8,10 @@
   display: none;
 }
 
+.visually-hidden {
+  display: none;
+}
+
 .chat-messages {
   display: flex;
   flex-direction: column;
