@@ -23,7 +23,7 @@ function SignupPage() {
 
   const userSchema = object({
     username: string().min(3).max(20).required(),
-    password: string().min(6).required(),
+    password: string().min(6, 'Не менее 6 символов').required(),
     confirmPassword: string().oneOf([Yup.ref('password'), null]),
   });
 
