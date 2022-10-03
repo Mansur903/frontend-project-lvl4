@@ -61,13 +61,13 @@ function SignupPage() {
                 validationSchema={userSchema}
                 onSubmit={handleSubmit}
               >
-                {({ isSubmitting }) => (
+                {() => (
                   <Form className="col-12 col-md-6 mt-3 mt-mb-0">
                     <h1 className="text-center mb-4">{t('interfaces.registration')}</h1>
                     <FormTextField name="username" type="text" placeholder={t('inputs.username')} />
                     <FormTextField name="password" type="password" placeholder={t('inputs.password')} />
                     <FormTextField name="confirmPassword" type="password" placeholder={t('inputs.confirmPassword')} />
-                    <Button type="submit" className="w-100 btn btn-outline-primary" variant="null" disabled={!isSubmitting}>{t('interfaces.signup')}</Button>
+                    <Button type="submit" className="w-100 btn btn-outline-primary" variant="null">{t('interfaces.signup')}</Button>
                   </Form>
                 )}
               </Formik>
