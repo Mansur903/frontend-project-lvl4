@@ -7,6 +7,7 @@ export default {
       createChannel: 'Создать канал',
       deleteChannel: 'Удалить канал',
       renameChannel: 'Переименовать канал',
+      channelName: 'Имя канала',
     },
     messages: {
       send: 'Отправить',
