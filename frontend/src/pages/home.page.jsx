@@ -74,7 +74,7 @@ function HomePage() {
               <span>{t('channels.header')}</span>
               <button onClick={addChannel} type="button" className="p-0 text-primary btn btn-group-vertical">
                 <PlusSquare width="20" height="20" />
-                <span className="visually-hidden">+</span>
+                {/* <span className="visually-hidden">+</span> */}
               </button>
             </div>
             <Channels />
