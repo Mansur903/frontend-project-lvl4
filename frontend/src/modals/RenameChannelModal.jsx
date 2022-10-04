@@ -70,9 +70,7 @@ function RenameChannelModal() {
           handleRenameChannel(clickedDropdownId, values);
         }}
       >
-        {({
-          isValid,
-        }) => (
+        {() => (
           <Form>
             <Modal.Body>
               <FormGroup className="form-group">
@@ -82,7 +80,7 @@ function RenameChannelModal() {
 
             <Modal.Footer>
               <Button className="btn btn-secondary" type="button" onClick={handleClose}>{t('interfaces.cancel')}</Button>
-              <Button className="btn btn-primary" type="submit" disabled={!isValid}>{t('channels.rename')}</Button>
+              <Button className="btn btn-primary" type="submit">{t('channels.rename')}</Button>
             </Modal.Footer>
           </Form>
         )}
