@@ -8,6 +8,7 @@ export default {
       deleteChannel: 'Удалить канал',
       renameChannel: 'Переименовать канал',
       channelName: 'Имя канала',
+      addButton: '+',
     },
     messages: {
       send: 'Отправить',
