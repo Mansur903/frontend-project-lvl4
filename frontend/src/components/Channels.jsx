@@ -38,7 +38,7 @@ function Channel(props) {
             {channel.name}
           </Button>
           <Dropdown.Toggle variant={isActive ? 'secondary' : null} split id="dropdown-split-basic">
-            <span className="visually-hidden">{t('channels.management')}</span>
+            <span className="visually-hidden">Управление каналом</span>
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item onClick={openRemoveModal(channel.id)}>{t('channels.delete')}</Dropdown.Item>
