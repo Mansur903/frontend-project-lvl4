@@ -9,6 +9,7 @@ export default {
       renameChannel: 'Переименовать канал',
       channelName: 'Имя канала',
       addButton: '+',
+      management: 'Управление каналом',
     },
     messages: {
       send: 'Отправить',
