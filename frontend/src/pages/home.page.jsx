@@ -73,8 +73,8 @@ function HomePage() {
             <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
               <span>{t('channels.header')}</span>
               <button onClick={addChannel} type="button" className="p-0 text-primary btn btn-group-vertical">
-                <PlusSquare width="20" height="20" />
-                <span className="visually-hidden">{'+'}</span>
+                {/* <span className="visually-hidden">{t('channels.addButton')}</span> */}
+                <PlusSquare width="20" height="20">{t('channels.addButton')}</PlusSquare>
               </button>
             </div>
             <Channels />
