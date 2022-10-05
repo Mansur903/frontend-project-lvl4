@@ -4,6 +4,6 @@ start-frontend:
 	make -C frontend start
 install:
 	npm ci
-	make -C frontend install
+	make -C frontend install --legacy-peer-deps
 start:
 	make start-backend & make start-frontend
