@@ -26,7 +26,8 @@ const messagesSlice = createSlice({
   },
 });
 
-export const getMessagesById = (id) => ({ messages: { messages } }) => messages.filter((item) => item.channel === id);
+export const getMessagesById = (id) => 
+  ({ messages: { messages } }) => messages.filter((item) => item.channel === id);
 
 export const { actions } = messagesSlice;
 export default messagesSlice.reducer;

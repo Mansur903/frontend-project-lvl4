@@ -62,7 +62,8 @@ function HomePage() {
 
   const activeChannelName = (id) => channels.filter((channel) => channel.id === id);
   const [channel] = activeChannelName(activeChannel);
-  const messagesCounter = () => messages.filter((message) => message.channel === activeChannel).length;
+  const messagesCounter = () => 
+    messages.filter((message) => message.channel === activeChannel).length;
 
   if (!dataReady) return null;
   return (
@@ -73,7 +74,7 @@ function HomePage() {
             <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
               <span>{t('channels.header')}</span>
               <button onClick={addChannel} type="button" className="p-0 text-primary btn btn-group-vertical">
-                <PlusSquare width="20" height="20"/>
+                <PlusSquare width="20" height="20" />
                 <span className="visually-hidden">+</span>
               </button>
             </div>
