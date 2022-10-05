@@ -63,7 +63,7 @@ function HomePage() {
   const activeChannelName = (id) => channels.filter((channel) => channel.id === id);
   const [channel] = activeChannelName(activeChannel);
   const messagesCounter = () => messages.filter((message) => message.channel === activeChannel).length; // eslint-disable-line max-len
- 
+
   if (!dataReady) return null;
   return (
     <>

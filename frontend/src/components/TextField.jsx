@@ -14,7 +14,7 @@ function TextField(props) {
         id={name}
         placeholder={placeholder}
         type={type}
-        {...rest}
+        {...rest} // eslint-disable-line react/jsx-props-no-spreading
         ref={inputEl}
       />
       <Form.Label htmlFor={name} className="visualy-hidden">{placeholder}</Form.Label>
