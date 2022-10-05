@@ -5,3 +5,4 @@ install:
 build:
 	npm build
 lint:
+test:
