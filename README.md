@@ -13,12 +13,12 @@
 ## Установка
 
 ```sh
-$ npm install
+$ make install
 ```
 
 ## Запуск
 
 ```sh
-$ npm start
+$ make start
 # http://localhost:5001
 ```
