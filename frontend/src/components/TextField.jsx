@@ -17,7 +17,7 @@ function TextField(props) {
         {...rest}
         ref={inputEl}
       />
-      <Form.Label htmlFor={name} visuallyHidden>{placeholder}</Form.Label>
+      <Form.Label htmlFor={name} className="visualy-hidden">{placeholder}</Form.Label>
       {helperText && <Form.Text className={cn({ 'error-field': error })}>{helperText}</Form.Text>}
     </Form.Group>
   );
