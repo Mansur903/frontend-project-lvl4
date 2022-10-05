@@ -13,23 +13,23 @@ const channelsSlice = createSlice({
   initialState,
   reducers: {
     initChannels: (state, action) => {
-      state.channels = action.payload.channels;
+      state.channels = action.payload.channels; // eslint-disable-line no-param-reassign
     },
     chooseChannel: (state, action) => {
-      state.activeChannel = action.payload;
+      state.activeChannel = action.payload; // eslint-disable-line no-param-reassign
     },
     newChannel: (state, action) => {
       state.channels.push(action.payload);
-      state.activeChannel = action.payload.id;
+      state.activeChannel = action.payload.id; // eslint-disable-line no-param-reassign
     },
     setActiveChannel: (state, action) => {
-      state.activeChannel = action.payload;
+      state.activeChannel = action.payload; // eslint-disable-line no-param-reassign
     },
     removeChannel: (state, action) => {
       const channelId = action.payload;
       _.remove(state.channels, (channel) => channel.id === channelId);
       if (state.activeChannel === channelId) {
-        state.activeChannel = 1;
+        state.activeChannel = 1; // eslint-disable-line no-param-reassign
       }
     },
     renameChannel: (state, action) => {

@@ -12,14 +12,14 @@ const modalSlice = createSlice({
   reducers: {
 
     openModal: (state, action) => {
-      state.isOpened = true;
-      state.type = action.payload.type;
-      state.channelId = action.payload.id;
+      state.isOpened = true; // eslint-disable-line no-param-reassign
+      state.type = action.payload.type; // eslint-disable-line no-param-reassign
+      state.channelId = action.payload.id; // eslint-disable-line no-param-reassign
     },
     closeModal: (state) => {
-      state.isOpened = false;
-      state.type = null;
-      state.channelId = null;
+      state.isOpened = false; // eslint-disable-line no-param-reassign
+      state.type = null; // eslint-disable-line no-param-reassign
+      state.channelId = null; // eslint-disable-line no-param-reassign
     },
 
   },

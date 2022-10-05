@@ -21,13 +21,12 @@ const messagesSlice = createSlice({
       _.remove(state.messages, (channel) => channel.id === channelId);
     })
       .addCase(channelsActions.initChannels, (state, action) => {
-        state.messages = action.payload.messages;
+        state.messages = action.payload.messages; // eslint-disable-line no-param-reassign
       });
   },
 });
 
-export const getMessagesById = (id) => 
-  ({ messages: { messages } }) => messages.filter((item) => item.channel === id);
+export const getMessagesById = (id) => ({ messages: { messages } }) => messages.filter((item) => item.channel === id); // eslint-disable-line max-len
 
 export const { actions } = messagesSlice;
 export default messagesSlice.reducer;
