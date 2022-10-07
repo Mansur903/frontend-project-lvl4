@@ -20,7 +20,7 @@ const TextField = React.forwardRef((props, ref) => {
       <Form.Label htmlFor={name}>{placeholder}</Form.Label>
       {helperText && <Form.Text className={cn({ 'error-field': error })}>{helperText}</Form.Text>}
     </Form.Group>
-  )
-})
+  );
+});
 
 export default TextField;

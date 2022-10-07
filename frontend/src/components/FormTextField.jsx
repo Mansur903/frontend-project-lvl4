@@ -8,6 +8,6 @@ const FormTextField = React.forwardRef((props, ref) => {
   return (
     <TextField {...field} {...props} ref={ref} error={meta.error && meta.touched} helperText={meta.touched && meta.error ? meta.error : props.hint} /> // eslint-disable-line max-len, react/jsx-props-no-spreading
   );
-})
+});
 
 export default FormTextField;
