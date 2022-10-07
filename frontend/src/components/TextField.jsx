@@ -2,7 +2,7 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 import cn from 'classnames';
 
-const TextField = React.forwardRef((props, ref) => {
+const TextField = React.forwardRef((props, ref) => { // eslint-disable-line react/display-name
   const {
     name, placeholder, error, type, helperText, ...rest
   } = props;
