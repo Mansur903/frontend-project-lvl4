@@ -17,7 +17,7 @@ const TextField = React.forwardRef((props, ref) => {
         {...rest} // eslint-disable-line react/jsx-props-no-spreading
         ref={ref}
       />
-      <Form.Label htmlFor={name} className="visually-hidden">{placeholder}</Form.Label>
+      <Form.Label htmlFor={name}>{placeholder}</Form.Label>
       {helperText && <Form.Text className={cn({ 'error-field': error })}>{helperText}</Form.Text>}
     </Form.Group>
   )
