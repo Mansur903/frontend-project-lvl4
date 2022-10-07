@@ -16,7 +16,7 @@ function Header() {
     <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
       <div className="container">
         <a className="navbar-brand" href="/">{t('chat.header')}</a>
-        {!!user === true ? <Link to="/login"><button type="button" onClick={handleLogOut} className="btn btn-primary">{t('interfaces.logOut')}</button></Link> : null}
+        {user ? <Link to="/login"><button type="button" onClick={handleLogOut} className="btn btn-primary">{t('interfaces.logOut')}</button></Link> : null}
       </div>
     </nav>
   );

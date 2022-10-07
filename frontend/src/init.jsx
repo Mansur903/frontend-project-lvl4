@@ -87,12 +87,6 @@ const init = async (socket) => {
     dispatch(channelsActions.renameChannel(channel));
   });
 
-  /* const rollbarConfig = {
-    accessToken: process.env.REACT_APP_ROLLBAR,
-    captureUncaught: true,
-    captureUnhandledRejections: true,
-  }; */
-
   await i18n
     .use(initReactI18next)
     .init({
