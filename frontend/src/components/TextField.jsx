@@ -21,7 +21,6 @@ const TextField = React.forwardRef((props, ref) => {
       {helperText && <Form.Text className={cn({ 'error-field': error })}>{helperText}</Form.Text>}
     </Form.Group>
   )
-
 })
 
 export default TextField;

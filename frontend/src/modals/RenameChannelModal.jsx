@@ -30,7 +30,7 @@ function RenameChannelModal() {
   const clickedDropdownId = useSelector(getDropdownId);
 
   const formSchema = object({
-    channelName: string().required(),
+    newName: string().required(),
   });
 
   useEffect(() => {
@@ -42,9 +42,9 @@ function RenameChannelModal() {
   };
 
   const handleRenameChannel = async (id, values) => {
-    const name = filter.clean(values.channelName);
+    const name = filter.clean(values.newName);
     const addedChannels = channels.map((channel) => channel.name);
-    if (!addedChannels.includes(values.channelName)) {
+    if (!addedChannels.includes(values.newName)) {
       try {
         await api.renameChannel({ id, name });
       } catch {
@@ -63,7 +63,7 @@ function RenameChannelModal() {
         <Modal.Title>{t('channels.renameChannel')}</Modal.Title>
       </Modal.Header>
       <Formik
-        initialValues={{ channelName: '' }}
+        initialValues={{ newName: '' }}
         validationSchema={formSchema}
         validateOnMount
         onSubmit={(values) => {
@@ -74,7 +74,7 @@ function RenameChannelModal() {
           <Form>
             <Modal.Body>
               <FormGroup className="form-group">
-                <FormTextField className="mb-2 form-control" name="channelName" type="text" placeholder={t('channels.channelName')} ref={inputRef} />
+                <FormTextField className="mb-2 form-control" name="newName" type="text" placeholder={t('channels.channelName')} ref={inputRef} />
               </FormGroup>
             </Modal.Body>
 
