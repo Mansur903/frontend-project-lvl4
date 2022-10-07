@@ -3,12 +3,11 @@ import { useField } from 'formik';
 
 import TextField from './TextField.jsx';
 
-function FormTextField({ name, hint = null, ...props }) {
-  const [field, meta] = useField(name);
-
+const FormTextField = React.forwardRef((props, ref) => {
+  const [field, meta] = useField(props.name);
   return (
-    <TextField {...field} {...props} error={meta.error && meta.touched} helperText={meta.touched && meta.error ? meta.error : hint} /> // eslint-disable-line max-len, react/jsx-props-no-spreading
+    <TextField {...field} {...props} ref={ref} error={meta.error && meta.touched} helperText={meta.touched && meta.error ? meta.error : props.hint} /> // eslint-disable-line max-len, react/jsx-props-no-spreading
   );
-}
+})
 
 export default FormTextField;

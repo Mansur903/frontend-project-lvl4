@@ -71,7 +71,7 @@ function AddChannelModal() {
           <Form>
             <Modal.Body>
               <FormGroup className="form-group">
-                <FormTextField className="mb-2 form-control" name="channelName" type="text" placeholder={t('channels.channelName')} inputEl={inputRef} />
+                <FormTextField className="mb-2 form-control" name="channelName" type="text" placeholder={t('channels.channelName')} ref={inputRef} />
               </FormGroup>
             </Modal.Body>
 

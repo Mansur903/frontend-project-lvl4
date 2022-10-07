@@ -2,9 +2,9 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 import cn from 'classnames';
 
-function TextField(props) {
+const TextField = React.forwardRef((props, ref) => {
   const {
-    name, placeholder, error, type, helperText, inputEl, ...rest
+    name, placeholder, error, type, helperText, ...rest
   } = props;
   return (
     <Form.Group className="mb-3">
@@ -15,12 +15,13 @@ function TextField(props) {
         placeholder={placeholder}
         type={type}
         {...rest} // eslint-disable-line react/jsx-props-no-spreading
-        ref={inputEl}
+        ref={ref}
       />
-      <Form.Label htmlFor={name} className="visualy-hidden">{placeholder}</Form.Label>
+      <Form.Label htmlFor={name} className="visually-hidden">{placeholder}</Form.Label>
       {helperText && <Form.Text className={cn({ 'error-field': error })}>{helperText}</Form.Text>}
     </Form.Group>
-  );
-}
+  )
+
+})
 
 export default TextField;
